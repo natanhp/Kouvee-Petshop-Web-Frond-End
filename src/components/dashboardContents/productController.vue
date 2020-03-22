@@ -29,19 +29,20 @@
             
                 <v-data-table 
                     :headers="headers" 
-                    :items="products" 
+                    :items="data" 
                     :search="keyword" 
                     :loading="load" 
                 > 
                     <template v-slot:body="{ items }"> 
                         <tbody> 
-                            <tr v-for="(item,index) in items" :key="item.id"> 
+                            <tr v-for="(item,index) in items" :key="index"> 
                                 <td>{{ index + 1 }}</td> 
-                                <td>{{ item.productName }}</td>
-                                <td>{{ item.productQuantity }}</td> 
-                                <td>{{ item.productPrice }}</td> 
-                                <td>{{ item.meassurement }}</td>
-                                <td>{{ item.minimumQty }}</td> 
+                                <td><v-img :src="item.img_url" max-width="100px" max-height="100px"></v-img></td>
+                                <td>{{ item.product.productName }}</td>
+                                <td>{{ item.product.productQuantity }}</td> 
+                                <td>{{ item.product.productPrice }}</td> 
+                                <td>{{ item.product.meassurement }}</td>
+                                <td>{{ item.product.minimumQty }}</td> 
                                
                                 <td class="text-center"> 
                                     <v-btn 
@@ -75,6 +76,10 @@
                 <v-card-text> 
                     <v-container> 
                         <v-row> 
+                            <v-col cols="12"> 
+                                <v-text-field label="*Nama Produk" v-model="form.productName" required></v-text-field>
+                            </v-col>
+
                             <v-col cols="12"> 
                                 <v-text-field label="*Nama Produk" v-model="form.productName" required></v-text-field>
                             </v-col>
@@ -131,6 +136,10 @@ export default {
                     value: 'id', 
                 }, 
                 { 
+                    text: 'Gambar Produk', 
+                    value: 'productImage' 
+                },
+                { 
                     text: 'Nama Produk', 
                     value: 'productName' 
                 },
@@ -151,7 +160,7 @@ export default {
                     value: 'minimumQty' 
                 }, 
             ], 
-            products: [], 
+            data: [], 
             snackbar: false, 
             color: null, 
             text: '', 
@@ -168,14 +177,15 @@ export default {
     },
    methods:{ 
         getData(){ 
-
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/product' 
+            var uri = this.$apiUrl + 'noa/products/getall' 
             this.$http.get(uri).then(response =>{ 
-                this.products=response.data.message 
-            }) 
+                response.data.data.forEach(element => {
+                   this.data.push({
+                       product: element.product,
+                       img_url: element.image_url
+                   }) 
+                });
+            })  
         }, 
         sendData(){ 
             this.product.append('productName', this.form.productName); 
