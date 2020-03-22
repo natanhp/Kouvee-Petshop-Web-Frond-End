@@ -55,7 +55,7 @@
                                         icon
                                         color="error"
                                         light 
-                                        @click="deleteData(item.id)"
+                                        @click="deleteData(item.idSupplier)"
                                     > 
                                         <v-icon>mdi-delete</v-icon>
                                     </v-btn> 
@@ -282,10 +282,7 @@ export default {
             this.updatedId = item.idSupplier 
         }, 
         deleteData(deleteId){ //menghapus data 
-        // const auth = {
-        //         headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-        //     }
-            var uri = this.$apiUrl + '/supplier/' + deleteId; //data dihapus berdasarkan id 
+            var uri = this.$apiUrl + 'suppliers/delete/'+ deleteId +'/' + this.$store.getters.loggedInEmployee 
             this.$http.delete(uri).then(response =>{ 
                 this.snackbar = true; 
                 this.text = response.data.message; 
