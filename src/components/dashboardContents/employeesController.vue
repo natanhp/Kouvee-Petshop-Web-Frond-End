@@ -354,11 +354,8 @@ export default {
             this.updatedId = item.id
             this.employeeHasedPassword = item.password
         }, 
-        deleteData(deleteId){ //menghapus data 
-        // const auth = {
-        //         headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-        //     }
-            var uri = this.$apiUrl + '/user/' + deleteId; //data dihapus berdasarkan id 
+        deleteData(deleteId){
+            var uri = this.$apiUrl + 'employees/delete/' + deleteId + '/' + this.$store.getters.loggedInEmployee;
             this.$http.delete(uri).then(response =>{ 
                 this.snackbar = true; 
                 this.text = response.data.message; 
