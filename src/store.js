@@ -43,11 +43,10 @@ export default new Vuex.Store({
 	            .then(resp => {
 	                const token = resp.data.token
                     const user = resp.data.data
-                    console.log(user)
                     localStorage.setItem('token', token)
                     localStorage.setItem('user', user.id)
-                    localStorage.setItem('role', user.role)
-                    console.log(localStorage.getItem('token'))
+					localStorage.setItem('role', user.role)
+					Vue.prototype.$http.defaults.headers.common['Authorization'] = "Bearer " + token
 	                commit('auth_success', token)
 	                commit('user_id', user.id)
 	                commit('user_role', user.role)
