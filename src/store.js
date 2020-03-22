@@ -9,6 +9,7 @@ export default new Vuex.Store({
   		status: '',
   		token: localStorage.getItem('token') || '',
   		user : localStorage.getItem('user') || '',
+  		role : localStorage.getItem('role') || '',
 	},
 	mutations: {
 		auth_request(state){
@@ -18,9 +19,13 @@ export default new Vuex.Store({
 		    state.status = 'success'
 		    state.token = token
         },
-        user_data(state, user) {
+        user_id(state, user) {
             state.status = 'success'
             state.user = user
+        },
+        user_role(state, role) {
+            state.status = 'success'
+            state.role = role
         },
 	  	auth_error(state){
 	    	state.status = 'error'
@@ -41,9 +46,11 @@ export default new Vuex.Store({
                     console.log(user)
                     localStorage.setItem('token', token)
                     localStorage.setItem('user', user.id)
+                    localStorage.setItem('role', user.role)
                     console.log(localStorage.getItem('token'))
 	                commit('auth_success', token)
-	                commit('user_data', user.id)
+	                commit('user_id', user.id)
+	                commit('user_role', user.role)
 	                resolve(resp)
 	            })
 	            .catch(err => {
@@ -85,6 +92,7 @@ export default new Vuex.Store({
 	getters : {
 	  isLoggedIn: state => !!state.token,
       authStatus: state => state.status,
-      loggedInEmployee: state => state.user
+      loggedInEmployee: state => state.user,
+      employeeRole: state => state.role
 	}
 })
