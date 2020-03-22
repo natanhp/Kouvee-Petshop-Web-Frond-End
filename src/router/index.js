@@ -47,8 +47,9 @@ const routes = [
                 path: '/product',
                 component: loadView('productController'),
                 meta: { 
-                    requiresAuth: true
-                }
+                    requiresAuth: true,
+                    role: "Owner"
+                }   
             },
             {
                 name: 'servicesController',
