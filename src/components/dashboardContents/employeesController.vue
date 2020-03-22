@@ -40,6 +40,7 @@
                             <tr v-for="(item,index) in items" :key="item.id"> 
                                 <td>{{ index + 1 }}</td> 
                                 <td>{{ item.name }}</td> 
+                                <td>{{ item.role }}</td> 
                                 <td>{{ item.address}}</td> 
                                 <td>{{ item.dateBirth }}</td> 
                                 <td>{{item.phoneNumber}}</td>
@@ -79,24 +80,56 @@
                                 <v-text-field label="Nama*" v-model="form.name" required></v-text-field> 
                             </v-col> 
 
+                            <v-col cols="12"> 
+                                <v-select :items="roleItems" v-model="form.role" label="Role*" required></v-select>
+                            </v-col> 
+
                             <v-col cols="12">
                                 <v-text-field label="Alamat*" v-model="form.address" required></v-text-field>
                             </v-col>     
 
                             <v-col cols="12"> 
-                                <v-text-field label="Tanggal Lahir*" v-model="form.dateBirth" required></v-text-field>
+                                <v-menu
+                                    :close-on-content-click="false"
+                                    :nudge-right="40"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="290px"
+                                >
+                                    <template v-slot:activator="{ on }">
+                                    <v-text-field
+                                        v-model="form.dateBirth"
+                                        label="Tanggal Lahir*"
+                                        prepend-icon="event"
+                                        readonly
+                                        required
+                                        v-on="on"
+                                    ></v-text-field>
+                                    </template>
+                                    <v-date-picker v-model="form.dateBirth"></v-date-picker>
+                                </v-menu>
                             </v-col>
 
                             <v-col cols="12"> 
                                 <v-text-field label="Nomor Telepon*" v-model="form.phoneNumber" required></v-text-field> 
                             </v-col> 
+
+                            <v-col cols="12"> 
+                                <v-text-field label="Username*" v-model="form.username" required></v-text-field> 
+                            </v-col> 
+
+                            <v-col cols="12"> 
+                                <v-text-field v-if="typeInput == 'new'" label="Password*" v-model="form.password" type="password" required></v-text-field> 
+                                <v-text-field v-else label="Password" v-model="form.password" type="password"></v-text-field> 
+                            </v-col> 
+
                         </v-row> 
                     </v-container>
                     <small>*Diharuskan untuk mengisi data</small> 
                 </v-card-text> 
                 <v-card-actions> 
                     <v-spacer></v-spacer> 
-                    <v-btn color="blue darken-1" text @click="dialog = false">Batal</v-btn> 
+                    <v-btn color="blue darken-1" text @click="closeCreateDialog()">Batal</v-btn> 
                     <v-btn color="blue darken-1" text @click="setForm()">Simpan</v-btn> 
                 </v-card-actions> 
             </v-card> 
@@ -151,6 +184,7 @@ export default {
     data () { 
         return { 
             dialog: false, 
+            calendarDialog: false,
             keyword: '', 
             headers: [ 
                 { 
@@ -160,7 +194,11 @@ export default {
                 { 
                     text: 'Nama', 
                     value: 'name' 
-                }, 
+                },
+                { 
+                    text: 'Role', 
+                    value: 'role' 
+                },  
                 { 
                     text: 'Alamat', 
                     value: 'address' 
@@ -187,14 +225,23 @@ export default {
             load: false,
             form: { 
                 name : '', 
+                role : '',
                 address : '', 
                 dateBirth : '',
-                phoneNumber : '', 
+                phoneNumber : '',
+                username: '',
+                password: '' 
             }, 
-            user : new FormData, 
+            user : [], 
             typeInput: 'new', 
             errors : '', 
-            updatedId : '', 
+            updatedId : '',
+            roleItems: [
+                'Owner',
+                'CS',
+                'Kasir'
+            ],
+            employeeHasedPassword: '',
         }
             // {items: [
             //     { title: 'Click Me1' },
@@ -216,25 +263,23 @@ export default {
             // }),
     methods:{ 
         getData(){ 
-
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/user' 
+            var uri = this.$apiUrl + 'employees/getall' 
             this.$http.get(uri).then(response =>{ 
-                this.users=response.data.message 
+                this.users=response.data.data
             }) 
         }, 
         sendData(){ 
+            this.user = new FormData
             this.user.append('name', this.form.name); 
+            this.user.append('role', this.form.role);
             this.user.append('address', this.form.address);
             this.user.append('dateBirth', this.form.dateBirth); 
             this.user.append('phoneNumber', this.form.phoneNumber);
+            this.user.append('username', this.form.username);
+            this.user.append('password', this.form.password);
+            this.user.append('createdBy', this.$store.getters.loggedInEmployee)
 
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri =this.$apiUrl + '/user' 
+            var uri =this.$apiUrl + 'employees/insert' 
             this.load = true 
             this.$http.post(uri,this.user).then(response =>{ 
                 this.snackbar = true; //mengaktifkan snackbar 
@@ -254,16 +299,33 @@ export default {
             }) 
         }, 
         updateData(){ 
-             this.user.append('name', this.form.name); 
-            this.user.append('address', this.form.address);
-            this.user.append('dateBirth', this.form.dateBirth); 
-            this.user.append('phoneNumber', this.form.phoneNumber);
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/user/' + this.updatedId; 
+            let id = this.updatedId
+            let passwordHashed = this.employeeHasedPassword
+            
+            var user = {
+                id: id,
+                name: this.form.name,
+                role: this.form.role,
+                address: this.form.address,
+                dateBirth: this.form.dateBirth,
+                phoneNumber: this.form.phoneNumber,
+                username:this.form.username,
+                updatedBy: this.$store.getters.loggedInEmployee
+            }
+
+            if (this.form.password === '' || this.form.password === undefined){
+                user['password'] = passwordHashed;
+                console.log(user.password)
+            } else {
+                user['password'] = this.form.password
+                console.log(this.form.password)
+            }
+            
+            var uri = this.$apiUrl + 'employees/update'; 
             this.load = true 
-            this.$http.post(uri,this.user).then(response =>{
+            this.$http.put(uri,this.$qs.stringify(user), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+        }}).then(response =>{
             this.snackbar = true; //mengaktifkan snackbar 
             this.color = 'green'; //memberi warna snackbar 
             this.text = response.data.message; //memasukkan pesan ke snackbar 
@@ -277,17 +339,20 @@ export default {
             this.text = 'Try Again'; 
             this.color = 'red'; 
             this.load = false; 
-            this.typeInput = 'new'; 
+            this.typeInput = 'edit'; 
         }) 
         }, 
         editHandler(item){ 
-            this.typeInput = 'edit'; 
-            this.dialog = true; 
-            this.form.name = item.name; 
-            this.form.address = item.address; 
-            this.form.dateBirth = item.dateBirth;
-            this.form.phoneNumber = item.phoneNumber;
-            this.updatedId = item.id 
+            this.typeInput = 'edit' 
+            this.dialog = true
+            this.form.name = item.name 
+            this.form.role = item.role
+            this.form.address = item.address 
+            this.form.dateBirth = item.dateBirth
+            this.form.phoneNumber = item.phoneNumber
+            this.form.username = item.username
+            this.updatedId = item.id
+            this.employeeHasedPassword = item.password
         }, 
         deleteData(deleteId){ //menghapus data 
         // const auth = {
@@ -318,10 +383,16 @@ export default {
         resetForm(){ 
             this.form = { 
                 name : '', 
+                role : '',
                 address : '', 
                 dateBirth : '',
                 phoneNumber : '' 
             } 
+        },
+        closeCreateDialog() {
+            this.resetForm()
+            this.dialog = false
+            this.typeInput = 'new'
         } 
         }, 
         mounted(){ 
