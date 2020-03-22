@@ -37,7 +37,7 @@
                 > 
                     <template v-slot:body="{ items }"> 
                         <tbody> 
-                            <tr v-for="(item,index) in items" :key="item.id"> 
+                            <tr v-for="(item,index) in items" :key="index"> 
                                 <td>{{ index + 1 }}</td> 
                                 <td>{{ item.name }}</td> 
                                 <td>{{ item.role }}</td> 
@@ -74,18 +74,19 @@
                     <span class="headline">Data Pegawai</span> 
                 </v-card-title> 
                 <v-card-text> 
+                    <v-form ref="form">
                     <v-container> 
                         <v-row> 
                             <v-col cols="12"> 
-                                <v-text-field label="Nama*" v-model="form.name" required></v-text-field> 
+                                <v-text-field label="Nama*" v-model="form.name" :rules="[() => !!form.name || 'Nama tidak boleh kosong']" required></v-text-field> 
                             </v-col> 
 
                             <v-col cols="12"> 
-                                <v-select :items="roleItems" v-model="form.role" label="Role*" required></v-select>
+                                <v-select :items="roleItems" v-model="form.role" label="Role*" :rules="[() => !!form.role || 'Role tidak boleh kosong']" required></v-select>
                             </v-col> 
 
                             <v-col cols="12">
-                                <v-text-field label="Alamat*" v-model="form.address" required></v-text-field>
+                                <v-text-field label="Alamat*" v-model="form.address" :rules="[() => !!form.address || 'Nama tidak boleh kosong']" required></v-text-field>
                             </v-col>     
 
                             <v-col cols="12"> 
@@ -102,6 +103,7 @@
                                         label="Tanggal Lahir*"
                                         prepend-icon="event"
                                         readonly
+                                        :rules="[() => !!form.dateBirth || 'Tanggal lahir tidak boleh kosong']"
                                         required
                                         v-on="on"
                                     ></v-text-field>
@@ -111,20 +113,27 @@
                             </v-col>
 
                             <v-col cols="12"> 
-                                <v-text-field label="Nomor Telepon*" v-model="form.phoneNumber" required></v-text-field> 
+                                <v-text-field label="Nomor Telepon*" v-model="form.phoneNumber" :rules="[() => !!form.phoneNumber.match(/^[0-9]*$/) && !!form.phoneNumber || 'Nomor telepon harus angka dan tidak boleh kosong']" required></v-text-field> 
                             </v-col> 
 
                             <v-col cols="12"> 
-                                <v-text-field label="Username*" v-model="form.username" required></v-text-field> 
+                                <v-text-field label="Username*" v-model="form.username" :rules="[() => !!form.username || 'Username tidak boleh kosong']" required></v-text-field> 
                             </v-col> 
 
                             <v-col cols="12"> 
-                                <v-text-field v-if="typeInput == 'new'" label="Password*" v-model="form.password" type="password" required></v-text-field> 
-                                <v-text-field v-else label="Password" v-model="form.password" type="password"></v-text-field> 
+                                <v-text-field v-if="typeInput == 'new'" label="Password*" v-model="form.password" type="password" :rules="[() => !!form.password || 'Password tidak boleh kosong',
+                                                                                                                                                v => (!!v && v) === passwordConfirm|| 'Password tidak cocok']"  required></v-text-field> 
+                                <v-text-field v-else label="Password" v-model="form.password" type="password" :rules="[v => (!!v && v) === passwordConfirm|| 'Password tidak cocok']" required></v-text-field> 
+                            </v-col> 
+
+                            <v-col cols="12"> 
+                                <v-text-field v-if="typeInput == 'new'" label="Konfirmasi Password*" v-model="passwordConfirm" type="password" required></v-text-field> 
+                                <v-text-field v-else label="Konfirmasi Password" v-model="passwordConfirm" type="password" required></v-text-field> 
                             </v-col> 
 
                         </v-row> 
                     </v-container>
+                    </v-form>
                     <small>*Diharuskan untuk mengisi data</small> 
                 </v-card-text> 
                 <v-card-actions> 
@@ -188,8 +197,8 @@ export default {
             keyword: '', 
             headers: [ 
                 { 
-                    text: 'ID', 
-                    value: 'id', 
+                    text: 'No', 
+                    value: 'no', 
                 }, 
                 { 
                     text: 'Nama', 
@@ -242,6 +251,7 @@ export default {
                 'Kasir'
             ],
             employeeHasedPassword: '',
+            passwordConfirm: '',
         }
             // {items: [
             //     { title: 'Click Me1' },
@@ -378,22 +388,22 @@ export default {
             } 
         }, 
         resetForm(){ 
-            this.form = { 
-                name : '', 
-                role : '',
-                address : '', 
-                dateBirth : '',
-                phoneNumber : '' 
-            } 
+           this.$refs.form.reset()
         },
         closeCreateDialog() {
             this.resetForm()
             this.dialog = false
             this.typeInput = 'new'
-        } 
+        },
+        validateForm() {
+            this.$refs.form.validate()
+        }
         }, 
         mounted(){ 
             this.getData(); 
         }, 
+        watch: {
+            passwordConfirm: 'validateForm'
+        }
     } 
 </script>
