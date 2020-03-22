@@ -18,7 +18,8 @@ const routes = [
                 path: '/employee',           
                 component: loadView('employeesController'),
                 meta: { 
-                    requiresAuth: true
+                    requiresAuth: true,
+                    role: "Owner"
                 }        
             },
             {
@@ -69,7 +70,14 @@ const router = new Router({mode: 'history', routes: routes})
 router.beforeEach((to, from, next) => {
     if(to.matched.some(record => record.meta.requiresAuth)) {
       if (store.getters.isLoggedIn) {
-        next()
+
+        if(store.getters.employeeRole === to.meta.role) {
+            next()
+            console.log()
+            return
+        }
+
+        next('/')
         return
       }
       next('/login') 
