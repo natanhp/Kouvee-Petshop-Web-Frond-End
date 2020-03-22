@@ -244,15 +244,19 @@ export default {
             }) 
         }, 
         updateData(){ 
-            this.supplier.append('name', this.form.name); 
-            this.supplier.append('address', this.form.address);
-            this.supplier.append('phoneNumber', this.form.phoneNumber);
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/supplier/' + this.updatedId; 
+            let supplier = {
+                idSupplier: this.updatedId,
+                name: this.form.name,
+                address: this.form.address,
+                phoneNumber: this.form.phoneNumber,
+                updatedBy: this.$store.getters.loggedInEmployee
+            }
+
+            var uri = this.$apiUrl + 'suppliers/update' 
             this.load = true 
-            this.$http.post(uri,this.supplier).then(response =>{
+            this.$http.put(uri,this.$qs.stringify(supplier), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+        }}).then(response =>{
             this.snackbar = true; //mengaktifkan snackbar 
             this.color = 'green'; //memberi warna snackbar 
             this.text = response.data.message; //memasukkan pesan ke snackbar 
@@ -274,8 +278,8 @@ export default {
             this.dialog = true; 
             this.form.name = item.name; 
             this.form.address = item.address; 
-            this.form.phoneNumber = item.address;
-            this.updatedId = item.id 
+            this.form.phoneNumber = item.phoneNumber;
+            this.updatedId = item.idSupplier 
         }, 
         deleteData(deleteId){ //menghapus data 
         // const auth = {
