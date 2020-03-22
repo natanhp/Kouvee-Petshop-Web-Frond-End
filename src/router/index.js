@@ -58,7 +58,11 @@ const routes = [
             {
                 name: 'suppliersController',
                 path: '/supplier',
-                component: loadView('suppliersController')
+                component: loadView('suppliersController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "Owner"
+                } 
             }
         ],     
     },   
