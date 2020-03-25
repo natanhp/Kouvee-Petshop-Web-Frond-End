@@ -177,12 +177,16 @@ export default {
         }, 
         updateData(){ 
             let petTyoe = {
-                type: this.form.type
+                id: this.updatedId,
+                type: this.form.type,
+                updatedBy: this.$store.getters.loggedInEmployee
             }
 
-            var uri = this.$apiUrl + '/pettype/' + this.updatedId; 
+            var uri = this.$apiUrl + 'pettypes/update' 
             this.load = true 
-            this.$http.post(uri,this.pettype).then(response =>{
+            this.$http.put(uri,this.$qs.stringify(petTyoe), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then(response =>{
             this.snackbar = true; //mengaktifkan snackbar 
             this.color = 'green'; //memberi warna snackbar 
             this.text = response.data.message; //memasukkan pesan ke snackbar 
@@ -196,7 +200,6 @@ export default {
             this.text = 'Try Again'; 
             this.color = 'red'; 
             this.load = false; 
-            this.typeInput = 'new'; 
         }) 
         }, 
         editHandler(item){ 
