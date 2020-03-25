@@ -2,7 +2,7 @@
     <v-container> 
         <v-card>
             <v-container grid-list-md mb-0>
-                <h2 class="text-md-center">Data Layanan</h2> 
+                <h2 class="text-md-center">Data Detil Layanan</h2> 
                 <v-layout row wrap style="margin:10px"> 
                     <v-flex xs6> 
                         <v-btn
