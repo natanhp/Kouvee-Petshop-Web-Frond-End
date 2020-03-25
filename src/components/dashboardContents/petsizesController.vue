@@ -136,8 +136,7 @@ export default {
             form: { 
                 size : '', 
                 
-            }, 
-            petsize : new FormData, 
+            },
             typeInput: 'new', 
             errors : '', 
             updatedId : '', 
@@ -151,15 +150,17 @@ export default {
             }) 
         }, 
         sendData(){ 
-            this.petsize.append('size', this.form.size); 
-           
+            let petSize = {
+                size: this.form.size,
+                createdBy: this.$store.getters.loggedInEmployee
 
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri =this.$apiUrl + '/petsize' 
+            }
+
+            var uri =this.$apiUrl + 'petsizes/insert' 
             this.load = true 
-            this.$http.post(uri,this.petsize).then(response =>{ 
+            this.$http.post(uri, this.$qs.stringify(petSize), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then(response =>{ 
                 this.snackbar = true; //mengaktifkan snackbar 
                 this.color = 'green'; //memberi warna snackbar 
                 this.text = response.data.message; //memasukkan pesan ke snackbar 
