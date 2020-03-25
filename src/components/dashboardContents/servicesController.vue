@@ -84,7 +84,7 @@
                 </v-card-text> 
                 <v-card-actions> 
                     <v-spacer></v-spacer> 
-                    <v-btn color="blue darken-1" text @click="dialog = false">Batal</v-btn> 
+                    <v-btn color="blue darken-1" text @click="closeForm()">Batal</v-btn> 
                     <v-btn color="blue darken-1" text @click="setForm()">Simpan</v-btn> 
                 </v-card-actions> 
             </v-card> 
@@ -221,14 +221,17 @@ export default {
             }) 
         }, 
         updateData(){ 
-             this.service.append('serviceName', this.form.serviceName); 
-            
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/service/' + this.updatedId; 
+            let service = {
+                id: this.updatedId,
+                serviceName: this.form.serviceName,
+                updatedBy: this.$store.getters.loggedInEmployee
+            }
+
+            var uri = this.$apiUrl + 'services/update' 
             this.load = true 
-            this.$http.post(uri,this.service).then(response =>{
+            this.$http.put(uri, this.$qs.stringify(service), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then(response =>{
             this.snackbar = true; //mengaktifkan snackbar 
             this.color = 'green'; //memberi warna snackbar 
             this.text = response.data.message; //memasukkan pesan ke snackbar 
