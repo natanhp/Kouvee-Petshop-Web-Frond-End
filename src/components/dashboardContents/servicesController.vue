@@ -188,13 +188,9 @@ export default {
             // }),
     methods:{ 
         getData(){ 
-
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/service' 
+            var uri = this.$apiUrl + 'services/getall' 
             this.$http.get(uri).then(response =>{ 
-                this.services=response.data.message 
+                this.services=response.data.data 
             }) 
         }, 
         sendData(){ 
