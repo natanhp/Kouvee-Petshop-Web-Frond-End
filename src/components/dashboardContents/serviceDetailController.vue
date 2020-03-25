@@ -336,12 +336,12 @@ export default {
             })
 
             let serviceDetail = {
-                // id: this.updatedId,
-                // Services_id: serviceId,
-                // PetTypes_id: petTypeId,
-                // PetSizes_id: petSizeId,
-                // price: this.form.price,
-                // updatedBy: this.$store.getters.loggedInEmployee
+                id: this.updatedId,
+                Services_id: serviceId,
+                PetTypes_id: petTypeId,
+                PetSizes_id: petSizeId,
+                price: this.form.price,
+                updatedBy: this.$store.getters.loggedInEmployee
             }
 
             var uri = this.$apiUrl + 'servicedetails/update' 
