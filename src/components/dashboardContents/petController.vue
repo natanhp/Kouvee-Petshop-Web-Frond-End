@@ -422,7 +422,7 @@ export default {
             this.updatedId = item.id 
         }, 
         deleteData(deleteId){ 
-            var uri = this.$apiUrl + 'servicedetails/delete/' + deleteId
+            var uri = this.$apiUrl + 'pets/delete/' + deleteId + '/' + this.$store.getters.loggedInEmployee
             this.$http.delete(uri).then(response =>{ 
                 this.snackbar = true; 
                 this.text = response.data.message; 
