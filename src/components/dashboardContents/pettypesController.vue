@@ -149,15 +149,16 @@ export default {
             }) 
         }, 
         sendData(){ 
-            this.pettype.append('type', this.form.type); 
-           
+            let petTyoe = {
+                type: this.form.type,
+                createdBy: this.$store.getters.loggedInEmployee
+            }
 
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri =this.$apiUrl + '/pettype' 
+            var uri =this.$apiUrl + 'pettypes/insert' 
             this.load = true 
-            this.$http.post(uri,this.pettype).then(response =>{ 
+            this.$http.post(uri,this.$qs.stringify(petTyoe), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then(response =>{ 
                 this.snackbar = true; //mengaktifkan snackbar 
                 this.color = 'green'; //memberi warna snackbar 
                 this.text = response.data.message; //memasukkan pesan ke snackbar 
@@ -175,11 +176,10 @@ export default {
             }) 
         }, 
         updateData(){ 
-             this.pettype.append('type', this.form.type); 
-           
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
+            let petTyoe = {
+                type: this.form.type
+            }
+
             var uri = this.$apiUrl + '/pettype/' + this.updatedId; 
             this.load = true 
             this.$http.post(uri,this.pettype).then(response =>{
