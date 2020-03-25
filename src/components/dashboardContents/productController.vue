@@ -74,6 +74,7 @@
                     <span class="headline">Data Produk</span> 
                 </v-card-title> 
                 <v-card-text> 
+                    <v-form ref="form">
                     <v-container> 
                         <v-row> 
                             <v-col cols="12"> 
@@ -105,11 +106,12 @@
                             </v-col> 
                         </v-row> 
                     </v-container>
+                    </v-form>
                     <small>*Diharuskan untuk mengisi data</small> 
                 </v-card-text> 
                 <v-card-actions> 
                     <v-spacer></v-spacer> 
-                    <v-btn color="blue darken-1" text @click="dialog = false">Batal</v-btn> 
+                    <v-btn color="blue darken-1" text @click="closeForm()">Batal</v-btn> 
                     <v-btn color="blue darken-1" text @click="setForm()">Simpan</v-btn> 
                 </v-card-actions> 
             </v-card> 
@@ -230,16 +232,19 @@ export default {
             }) 
         }, 
         updateData(){ 
+            this.product = new FormData
+            this.product.append('id', this.updatedId); 
             this.product.append('productName', this.form.productName); 
             this.product.append('productQuantity', this.form.productQuantity);
             this.product.append('productPrice', this.form.productPrice);
             this.product.append('meassurement', this.form.meassurement);
             this.product.append('minimumQty', this.form.minimumQty);
-            
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/product/' + this.updatedId; 
+            this.product.append('updatedBy', this.$store.getters.loggedInEmployee);
+            if(this.form.image != undefined) {
+                this.product.append('image', this.form.image);
+            }
+
+            var uri = this.$apiUrl + 'products/update' 
             this.load = true 
             this.$http.post(uri,this.product).then(response =>{
             this.snackbar = true; //mengaktifkan snackbar 
@@ -254,19 +259,18 @@ export default {
             this.snackbar = true; 
             this.text = 'Try Again'; 
             this.color = 'red'; 
-            this.load = false; 
-            this.typeInput = 'new'; 
+            this.load = false;
         }) 
         }, 
         editHandler(item){ 
             this.typeInput = 'edit'; 
             this.dialog = true; 
-            this.form.productName = item.productName;
-            this.form.productQuantity = item.productQuantity;
-            this.form.productPrice = item.productPrice;
-            this.form.meassurement = item.meassurement;
-            this.form.minimumQty = item.minimumQty;  
-            this.updatedId = item.id 
+            this.form.productName = item.product.productName;
+            this.form.productQuantity = item.product.productQuantity;
+            this.form.productPrice = item.product.productPrice;
+            this.form.meassurement = item.product.meassurement;
+            this.form.minimumQty = item.product.minimumQty;  
+            this.updatedId = item.product.id 
         }, 
         deleteData(deleteId){ //menghapus data 
         // const auth = {
@@ -293,16 +297,14 @@ export default {
                 console.log("dddd")
                 this.updateData() 
             } 
-        }, 
+        },
+        closeForm() {
+            this.resetForm()
+            this.dialog = false
+        },
         resetForm(){ 
-            this.form = { 
-                productName : '',
-                productQuantity :'',
-                productPrice :'',
-                meassurement :'',
-                minimumQty :''
-            } 
-        } 
+            this.$refs.form.reset()
+        }  
         }, 
         mounted(){ 
             this.getData(); 
