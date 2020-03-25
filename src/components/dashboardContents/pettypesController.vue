@@ -69,7 +69,8 @@
                     <span class="headline">Data Tipe Hewan</span> 
                 </v-card-title> 
                 <v-card-text> 
-                    <v-container> 
+                    <v-form ref="form">
+                     <v-container> 
                         <v-row> 
                             <v-col cols="12"> 
                                 <v-text-field label="Tipe*" v-model="form.type" required></v-text-field> 
@@ -77,12 +78,13 @@
 
                           
                         </v-row> 
-                    </v-container>
+                        </v-container>
+                    </v-form>
                     <small>*Diharuskan untuk mengisi data</small> 
                 </v-card-text> 
                 <v-card-actions> 
                     <v-spacer></v-spacer> 
-                    <v-btn color="blue darken-1" text @click="dialog = false">Batal</v-btn> 
+                    <v-btn color="blue darken-1" text @click="closeForm()">Batal</v-btn> 
                     <v-btn color="blue darken-1" text @click="setForm()">Simpan</v-btn> 
                 </v-card-actions> 
             </v-card> 
@@ -233,11 +235,13 @@ export default {
                 console.log("dddd")
                 this.updateData() 
             } 
-        }, 
+        },
+        closeForm() {
+            this.resetForm()
+            this.dialog = false
+        },
         resetForm(){ 
-            this.form = { 
-                type : ''
-            } 
+            this.$refs.form.reset()
         } 
         }, 
         mounted(){ 
