@@ -313,15 +313,40 @@ export default {
             }) 
         }, 
         updateData(){ 
-            let service = {
+            var serviceId = ''
+            var petTypeId = ''
+            var petSizeId = ''
+
+            this.services.forEach(element => {
+                if(element.service === this.form.service) {
+                    serviceId = element.id
+                }
+            })
+
+            this.petTypes.forEach(element => {
+                if(element.type === this.form.petType) {
+                    petTypeId = element.id
+                }
+            })
+
+            this.petSizes.forEach(element => {
+                if(element.size === this.form.petSize) {
+                    petSizeId = element.id
+                }
+            })
+
+            let serviceDetail = {
                 id: this.updatedId,
-                serviceName: this.form.serviceName,
+                Services_id: serviceId,
+                PetTypes_id: petTypeId,
+                PetSizes_id: petSizeId,
+                price: this.form.price,
                 updatedBy: this.$store.getters.loggedInEmployee
             }
 
-            var uri = this.$apiUrl + 'services/update' 
+            var uri = this.$apiUrl + 'servicedetails/update' 
             this.load = true 
-            this.$http.put(uri, this.$qs.stringify(service), {headers: {
+            this.$http.put(uri, this.$qs.stringify(serviceDetail), {headers: {
             'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
             }}).then(response =>{
             this.snackbar = true; //mengaktifkan snackbar 
@@ -342,8 +367,27 @@ export default {
         }, 
         editHandler(item){ 
             this.typeInput = 'edit'; 
-            this.dialog = true; 
-            this.form.serviceName = item.serviceName;  
+            this.dialog = true;
+            this.services.forEach(element => {
+                if(element.id === item.serviceId) {
+                    this.form.service = element.service   
+                }
+            }) 
+
+            this.petTypes.forEach(element => {
+                if(element.id === item.petTypeId) {
+                    this.form.petType = element.type
+                }
+            })
+
+            this.petSizes.forEach(element => {
+                if(element.id === item.petSizeId) {
+                    this.form.petSize = element.size
+                }
+            })
+
+            this.form.price = item.price
+
             this.updatedId = item.id 
         }, 
         deleteData(deleteId){ 
@@ -365,7 +409,6 @@ export default {
             if (this.typeInput === 'new') { 
                 this.sendData() 
             } else { 
-                console.log("dddd")
                 this.updateData() 
             } 
         },
