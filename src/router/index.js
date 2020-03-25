@@ -25,12 +25,20 @@ const routes = [
             {
                 name: 'petsizesController',           
                 path: '/petsize',           
-                component: loadView('petsizesController')  
+                component: loadView('petsizesController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "Owner"
+                }    
             },
             {
                 name: 'pettypesController',
                 path: '/pettype',
-                component: loadView('pettypesController')
+                component: loadView('pettypesController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "Owner"
+                }  
             },
             {
                 nama: 'Login',
@@ -54,12 +62,25 @@ const routes = [
             {
                 name: 'servicesController',
                 path: '/service',
-                component: loadView('servicesController')
+                component: loadView('servicesController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "Owner"
+                }  
             },
             {
                 name: 'suppliersController',
                 path: '/supplier',
                 component: loadView('suppliersController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "Owner"
+                } 
+            },
+            {
+                name: 'serviceDetailController',
+                path: '/servicedetail',
+                component: loadView('serviceDetailController'),
                 meta: { 
                     requiresAuth: true,
                     role: "Owner"
