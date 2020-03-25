@@ -79,10 +79,6 @@
                             <v-col cols="12"> 
                                 <v-text-field label="*Nama Produk" v-model="form.productName" required></v-text-field>
                             </v-col>
-
-                            <v-col cols="12"> 
-                                <v-text-field label="*Nama Produk" v-model="form.productName" required></v-text-field>
-                            </v-col>
                             <v-col cols="12"> 
                                 <v-text-field label="*Jumlah Produk" v-model="form.productQuantity" required></v-text-field>
                             </v-col> 
@@ -94,6 +90,18 @@
                             </v-col>
                             <v-col cols="12"> 
                                 <v-text-field label="*Jumlah Minimal" v-model="form.minimumQty" required></v-text-field>
+                            </v-col>
+                            <v-col cols="12"> 
+                                <v-file-input
+                                    :rules="[
+                                        value => !value || value.size < 56000 || 'Ukuran gambar maksimal 56Kb',
+                                    ]"
+                                    v-model="form.image"
+                                    accept="image/jpeg"
+                                    placeholder="Pilih Gambar"
+                                    prepend-icon="mdi-camera"
+                                    label="Gambar Produk"
+                                ></v-file-input>
                             </v-col> 
                         </v-row> 
                     </v-container>
@@ -166,10 +174,14 @@ export default {
             text: '', 
             load: false,
             form: { 
-                type : '', 
-                
+                productName : '',
+                productQuantity: '',
+                productPrice: '',
+                meassurement: '',
+                minimumQty: '',
+                image: '',
             }, 
-            product : new FormData, 
+            product : {}, 
             typeInput: 'new', 
             errors : '', 
             updatedId : '', 
@@ -177,8 +189,9 @@ export default {
     },
    methods:{ 
         getData(){ 
-            var uri = this.$apiUrl + 'noa/products/getall' 
+            var uri = this.$apiUrl + 'noa/products/getall'
             this.$http.get(uri).then(response =>{ 
+                this.data = []
                 response.data.data.forEach(element => {
                    this.data.push({
                        product: element.product,
@@ -188,17 +201,16 @@ export default {
             })  
         }, 
         sendData(){ 
+            this.product = new FormData
             this.product.append('productName', this.form.productName); 
             this.product.append('productQuantity', this.form.productQuantity);
             this.product.append('productPrice', this.form.productPrice);
             this.product.append('meassurement', this.form.meassurement);
             this.product.append('minimumQty', this.form.minimumQty);
+            this.product.append('image', this.form.image);
+            this.product.append('createdBy', this.$store.getters.loggedInEmployee);
             
-
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri =this.$apiUrl + '/product' 
+            var uri =this.$apiUrl + 'products/insert' 
             this.load = true 
             this.$http.post(uri,this.product).then(response =>{ 
                 this.snackbar = true; //mengaktifkan snackbar 
