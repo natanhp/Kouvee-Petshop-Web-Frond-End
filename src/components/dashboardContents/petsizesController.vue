@@ -178,14 +178,17 @@ export default {
             }) 
         }, 
         updateData(){ 
-             this.petsize.append('size', this.form.size); 
-           
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/petsize/' + this.updatedId; 
+            let petSize = {
+                id: this.updatedId,
+                size: this.form.size,
+                updatedBy: this.$store.getters.loggedInEmployee
+            }
+
+            var uri = this.$apiUrl + 'petsizes/update' 
             this.load = true 
-            this.$http.post(uri,this.petsize).then(response =>{
+            this.$http.put(uri, this.$qs.stringify(petSize), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then(response =>{
             this.snackbar = true; //mengaktifkan snackbar 
             this.color = 'green'; //memberi warna snackbar 
             this.text = response.data.message; //memasukkan pesan ke snackbar 
