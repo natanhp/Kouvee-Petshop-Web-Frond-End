@@ -85,6 +85,15 @@ const routes = [
                     requiresAuth: true,
                     role: "Owner"
                 } 
+            },
+            {
+                name: 'customerController',
+                path: '/customer',
+                component: loadView('customerController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "CS"
+                } 
             }
         ],     
     },   
