@@ -29,19 +29,20 @@
             
                 <v-data-table 
                     :headers="headers" 
-                    :items="products" 
+                    :items="data" 
                     :search="keyword" 
                     :loading="load" 
                 > 
                     <template v-slot:body="{ items }"> 
                         <tbody> 
-                            <tr v-for="(item,index) in items" :key="item.id"> 
+                            <tr v-for="(item,index) in items" :key="index"> 
                                 <td>{{ index + 1 }}</td> 
-                                <td>{{ item.productName }}</td>
-                                <td>{{ item.productQuantity }}</td> 
-                                <td>{{ item.productPrice }}</td> 
-                                <td>{{ item.meassurement }}</td>
-                                <td>{{ item.minimumQty }}</td> 
+                                <td><v-img :src="item.img_url" max-width="100px" max-height="100px"></v-img></td>
+                                <td>{{ item.product.productName }}</td>
+                                <td>{{ item.product.productQuantity }}</td> 
+                                <td>{{ item.product.productPrice }}</td> 
+                                <td>{{ item.product.meassurement }}</td>
+                                <td>{{ item.product.minimumQty }}</td> 
                                
                                 <td class="text-center"> 
                                     <v-btn 
@@ -56,7 +57,7 @@
                                         icon
                                         color="error"
                                         light 
-                                        @click="deleteData(item.id)"
+                                        @click="deleteData(item.product.id)"
                                     > 
                                         <v-icon>mdi-delete</v-icon>
                                     </v-btn> 
@@ -73,6 +74,7 @@
                     <span class="headline">Data Produk</span> 
                 </v-card-title> 
                 <v-card-text> 
+                    <v-form ref="form">
                     <v-container> 
                         <v-row> 
                             <v-col cols="12"> 
@@ -89,14 +91,27 @@
                             </v-col>
                             <v-col cols="12"> 
                                 <v-text-field label="*Jumlah Minimal" v-model="form.minimumQty" required></v-text-field>
+                            </v-col>
+                            <v-col cols="12"> 
+                                <v-file-input
+                                    :rules="[
+                                        value => !value || value.size < 56000 || 'Ukuran gambar maksimal 56Kb',
+                                    ]"
+                                    v-model="form.image"
+                                    accept="image/jpeg"
+                                    placeholder="Pilih Gambar"
+                                    prepend-icon="mdi-camera"
+                                    label="Gambar Produk"
+                                ></v-file-input>
                             </v-col> 
                         </v-row> 
                     </v-container>
+                    </v-form>
                     <small>*Diharuskan untuk mengisi data</small> 
                 </v-card-text> 
                 <v-card-actions> 
                     <v-spacer></v-spacer> 
-                    <v-btn color="blue darken-1" text @click="dialog = false">Batal</v-btn> 
+                    <v-btn color="blue darken-1" text @click="closeForm()">Batal</v-btn> 
                     <v-btn color="blue darken-1" text @click="setForm()">Simpan</v-btn> 
                 </v-card-actions> 
             </v-card> 
@@ -127,40 +142,48 @@ export default {
             keyword: '',    
             headers: [ 
                 { 
-                    text: 'ID', 
-                    value: 'id', 
+                    text: 'No', 
+                    value: 'no', 
                 }, 
                 { 
+                    text: 'Gambar Produk', 
+                    value: 'img_url' 
+                },
+                { 
                     text: 'Nama Produk', 
-                    value: 'productName' 
+                    value: 'product.productName' 
                 },
                 { 
                     text: 'Jumlah Produk', 
-                    value: 'productQuantity' 
+                    value: 'product.productQuantity' 
                 },
                 { 
                     text: 'Harga Produk', 
-                    value: 'productPrice' 
+                    value: 'product.productPrice' 
                 },
                 { 
                     text: 'Satuan Produk', 
-                    value: 'meassurement' 
+                    value: 'product.meassurement' 
                 },
                 { 
                     text: 'Jumlah Minimum', 
-                    value: 'minimumQty' 
+                    value: 'product.minimumQty' 
                 }, 
             ], 
-            products: [], 
+            data: [], 
             snackbar: false, 
             color: null, 
             text: '', 
             load: false,
             form: { 
-                type : '', 
-                
+                productName : '',
+                productQuantity: '',
+                productPrice: '',
+                meassurement: '',
+                minimumQty: '',
+                image: '',
             }, 
-            product : new FormData, 
+            product : {}, 
             typeInput: 'new', 
             errors : '', 
             updatedId : '', 
@@ -168,27 +191,28 @@ export default {
     },
    methods:{ 
         getData(){ 
-
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/product' 
+            var uri = this.$apiUrl + 'noa/products/getall'
             this.$http.get(uri).then(response =>{ 
-                this.products=response.data.message 
-            }) 
+                this.data = []
+                response.data.data.forEach(element => {
+                   this.data.push({
+                       product: element.product,
+                       img_url: element.image_url
+                   }) 
+                });
+            })  
         }, 
         sendData(){ 
+            this.product = new FormData
             this.product.append('productName', this.form.productName); 
             this.product.append('productQuantity', this.form.productQuantity);
             this.product.append('productPrice', this.form.productPrice);
             this.product.append('meassurement', this.form.meassurement);
             this.product.append('minimumQty', this.form.minimumQty);
+            this.product.append('image', this.form.image);
+            this.product.append('createdBy', this.$store.getters.loggedInEmployee);
             
-
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri =this.$apiUrl + '/product' 
+            var uri =this.$apiUrl + 'products/insert' 
             this.load = true 
             this.$http.post(uri,this.product).then(response =>{ 
                 this.snackbar = true; //mengaktifkan snackbar 
@@ -208,16 +232,19 @@ export default {
             }) 
         }, 
         updateData(){ 
+            this.product = new FormData
+            this.product.append('id', this.updatedId); 
             this.product.append('productName', this.form.productName); 
             this.product.append('productQuantity', this.form.productQuantity);
             this.product.append('productPrice', this.form.productPrice);
             this.product.append('meassurement', this.form.meassurement);
             this.product.append('minimumQty', this.form.minimumQty);
-            
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/product/' + this.updatedId; 
+            this.product.append('updatedBy', this.$store.getters.loggedInEmployee);
+            if(this.form.image != undefined) {
+                this.product.append('image', this.form.image);
+            }
+
+            var uri = this.$apiUrl + 'products/update' 
             this.load = true 
             this.$http.post(uri,this.product).then(response =>{
             this.snackbar = true; //mengaktifkan snackbar 
@@ -232,25 +259,21 @@ export default {
             this.snackbar = true; 
             this.text = 'Try Again'; 
             this.color = 'red'; 
-            this.load = false; 
-            this.typeInput = 'new'; 
+            this.load = false;
         }) 
         }, 
         editHandler(item){ 
             this.typeInput = 'edit'; 
             this.dialog = true; 
-            this.form.productName = item.productName;
-            this.form.productQuantity = item.productQuantity;
-            this.form.productPrice = item.productPrice;
-            this.form.meassurement = item.meassurement;
-            this.form.minimumQty = item.minimumQty;  
-            this.updatedId = item.id 
+            this.form.productName = item.product.productName;
+            this.form.productQuantity = item.product.productQuantity;
+            this.form.productPrice = item.product.productPrice;
+            this.form.meassurement = item.product.meassurement;
+            this.form.minimumQty = item.product.minimumQty;  
+            this.updatedId = item.product.id 
         }, 
         deleteData(deleteId){ //menghapus data 
-        // const auth = {
-        //         headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-        //     }
-            var uri = this.$apiUrl + '/product/' + deleteId; //data dihapus berdasarkan id 
+            var uri = this.$apiUrl + 'products/delete/' + deleteId + '/' + this.$store.getters.loggedInEmployee //data dihapus berdasarkan id 
             this.$http.delete(uri).then(response =>{ 
                 this.snackbar = true; 
                 this.text = response.data.message; 
@@ -271,16 +294,14 @@ export default {
                 console.log("dddd")
                 this.updateData() 
             } 
-        }, 
+        },
+        closeForm() {
+            this.resetForm()
+            this.dialog = false
+        },
         resetForm(){ 
-            this.form = { 
-                productName : '',
-                productQuantity :'',
-                productPrice :'',
-                meassurement :'',
-                minimumQty :''
-            } 
-        } 
+            this.$refs.form.reset()
+        }  
         }, 
         mounted(){ 
             this.getData(); 

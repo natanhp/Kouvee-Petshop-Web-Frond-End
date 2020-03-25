@@ -37,7 +37,7 @@
                 > 
                     <template v-slot:body="{ items }"> 
                         <tbody> 
-                            <tr v-for="(item,index) in items" :key="item.id"> 
+                            <tr v-for="(item,index) in items" :key="index"> 
                                 <td>{{ index + 1 }}</td> 
                                 <td>{{ item.name }}</td> 
                                 <td>{{ item.address}}</td> 
@@ -55,7 +55,7 @@
                                         icon
                                         color="error"
                                         light 
-                                        @click="deleteData(item.id)"
+                                        @click="deleteData(item.idSupplier)"
                                     > 
                                         <v-icon>mdi-delete</v-icon>
                                     </v-btn> 
@@ -72,25 +72,30 @@
                     <span class="headline">Data Pemasok</span> 
                 </v-card-title> 
                 <v-card-text> 
-                    <v-container> 
+                     <v-form ref="form">
+                        <v-container> 
                         <v-row> 
+                           
+                               
                             <v-col cols="12"> 
-                                <v-text-field label="Nama*" v-model="form.name" required></v-text-field> 
+                                <v-text-field label="Nama*" v-model="form.name" :rules="[() => !!form.name || 'Nama tidak boleh kosong']" required></v-text-field> 
                             </v-col> 
 
                             <v-col cols="12">
-                                <v-text-field label="Alamat*" v-model="form.address" required></v-text-field>
+                                <v-text-field label="Alamat*" v-model="form.address" :rules="[() => !!form.address || 'Alamat tidak boleh kosong']" required></v-text-field>
                             </v-col>     
                             <v-col cols="12"> 
-                                <v-text-field label="Nomor Telepon*" v-model="form.phoneNumber" required></v-text-field> 
+                                <v-text-field label="Nomor Telepon*" v-model="form.phoneNumber" :rules="[() => !!form.phoneNumber.match(/^[0-9]*$/) && !!form.phoneNumber || 'Nomor telepon harus angka dan tidak boleh kosong']" required></v-text-field> 
                             </v-col> 
+                            
                         </v-row> 
-                    </v-container>
+                        </v-container>
+                    </v-form>
                     <small>*Diharuskan untuk mengisi data</small> 
                 </v-card-text> 
                 <v-card-actions> 
                     <v-spacer></v-spacer> 
-                    <v-btn color="blue darken-1" text @click="dialog = false">Batal</v-btn> 
+                    <v-btn color="blue darken-1" text @click="closeForm()">Batal</v-btn> 
                     <v-btn color="blue darken-1" text @click="setForm()">Simpan</v-btn> 
                 </v-card-actions> 
             </v-card> 
@@ -148,8 +153,8 @@ export default {
             keyword: '', 
             headers: [ 
                 { 
-                    text: 'ID', 
-                    value: 'id', 
+                    text: 'No', 
+                    value: 'no', 
                 }, 
                 { 
                     text: 'Nama', 
@@ -179,8 +184,7 @@ export default {
                 name : '', 
                 address : '', 
                 phoneNumber : '', 
-            }, 
-            supplier : new FormData, 
+            },
             typeInput: 'new', 
             errors : '', 
             updatedId : '', 
@@ -205,26 +209,24 @@ export default {
             // }),
     methods:{ 
         getData(){ 
-
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/supplier' 
+            var uri = this.$apiUrl + 'suppliers/getall' 
             this.$http.get(uri).then(response =>{ 
-                this.suppliers=response.data.message 
+                this.suppliers=response.data.data 
             }) 
         }, 
         sendData(){ 
-            this.supplier.append('name', this.form.name); 
-            this.supplier.append('address', this.form.address);
-            this.supplier.append('phoneNumber', this.form.phoneNumber);
+            let supplier = {
+                name: this.form.name,
+                address: this.form.address,
+                phoneNumber: this.form.phoneNumber,
+                createdBy: this.$store.getters.loggedInEmployee
+            }
 
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri =this.$apiUrl + '/supplier' 
+            var uri =this.$apiUrl + 'suppliers/insert' 
             this.load = true 
-            this.$http.post(uri,this.supplier).then(response =>{ 
+            this.$http.post(uri,this.$qs.stringify(supplier), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+        }}).then(response =>{ 
                 this.snackbar = true; //mengaktifkan snackbar 
                 this.color = 'green'; //memberi warna snackbar 
                 this.text = response.data.message; //memasukkan pesan ke snackbar 
@@ -242,15 +244,19 @@ export default {
             }) 
         }, 
         updateData(){ 
-            this.supplier.append('name', this.form.name); 
-            this.supplier.append('address', this.form.address);
-            this.supplier.append('phoneNumber', this.form.phoneNumber);
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/supplier/' + this.updatedId; 
+            let supplier = {
+                idSupplier: this.updatedId,
+                name: this.form.name,
+                address: this.form.address,
+                phoneNumber: this.form.phoneNumber,
+                updatedBy: this.$store.getters.loggedInEmployee
+            }
+
+            var uri = this.$apiUrl + 'suppliers/update' 
             this.load = true 
-            this.$http.post(uri,this.supplier).then(response =>{
+            this.$http.put(uri,this.$qs.stringify(supplier), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+        }}).then(response =>{
             this.snackbar = true; //mengaktifkan snackbar 
             this.color = 'green'; //memberi warna snackbar 
             this.text = response.data.message; //memasukkan pesan ke snackbar 
@@ -272,14 +278,11 @@ export default {
             this.dialog = true; 
             this.form.name = item.name; 
             this.form.address = item.address; 
-            this.form.phoneNumber = item.address;
-            this.updatedId = item.id 
+            this.form.phoneNumber = item.phoneNumber;
+            this.updatedId = item.idSupplier 
         }, 
         deleteData(deleteId){ //menghapus data 
-        // const auth = {
-        //         headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-        //     }
-            var uri = this.$apiUrl + '/supplier/' + deleteId; //data dihapus berdasarkan id 
+            var uri = this.$apiUrl + 'suppliers/delete/'+ deleteId +'/' + this.$store.getters.loggedInEmployee 
             this.$http.delete(uri).then(response =>{ 
                 this.snackbar = true; 
                 this.text = response.data.message; 
@@ -300,17 +303,17 @@ export default {
                 console.log("dddd")
                 this.updateData() 
             } 
-        }, 
+        },
+        closeForm() {
+            this.resetForm()
+            this.dialog = false
+        },
         resetForm(){ 
-            this.form = { 
-                name : '', 
-                address : '', 
-                phoneNumber : '' 
-            } 
+            this.$refs.form.reset()
         } 
         }, 
         mounted(){ 
             this.getData(); 
-        }, 
+        },
     } 
 </script>

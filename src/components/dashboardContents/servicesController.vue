@@ -71,18 +71,20 @@
                     <span class="headline">Data Layanan</span> 
                 </v-card-title> 
                 <v-card-text> 
-                    <v-container> 
+                     <v-form ref="form">
+                        <v-container> 
                         <v-row> 
                             <v-col cols="12"> 
                                 <v-text-field label="Nama Layanan*" v-model="form.serviceName" required></v-text-field> 
                             </v-col> 
                         </v-row> 
-                    </v-container>
+                        </v-container>
+                     </v-form>
                     <small>*Diharuskan untuk mengisi data</small> 
                 </v-card-text> 
                 <v-card-actions> 
                     <v-spacer></v-spacer> 
-                    <v-btn color="blue darken-1" text @click="dialog = false">Batal</v-btn> 
+                    <v-btn color="blue darken-1" text @click="closeForm()">Batal</v-btn> 
                     <v-btn color="blue darken-1" text @click="setForm()">Simpan</v-btn> 
                 </v-card-actions> 
             </v-card> 
@@ -140,8 +142,8 @@ export default {
             keyword: '', 
             headers: [ 
                 { 
-                    text: 'ID', 
-                    value: 'id', 
+                    text: 'No', 
+                    value: 'no', 
                 }, 
                 { 
                     text: 'Nama Layanan', 
@@ -162,8 +164,7 @@ export default {
             form: { 
                 serviceName : '', 
                
-            }, 
-            service : new FormData, 
+            },
             typeInput: 'new', 
             errors : '', 
             updatedId : '', 
@@ -188,25 +189,21 @@ export default {
             // }),
     methods:{ 
         getData(){ 
-
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/service' 
+            var uri = this.$apiUrl + 'services/getall' 
             this.$http.get(uri).then(response =>{ 
-                this.services=response.data.message 
+                this.services=response.data.data 
             }) 
         }, 
         sendData(){ 
-            this.service.append('serviceName', this.form.serviceName); 
-            
-
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri =this.$apiUrl + '/service' 
+            let service = {
+                serviceName: this.form.serviceName,
+                createdBy: this.$store.getters.loggedInEmployee
+            }
+            var uri =this.$apiUrl + 'services/insert' 
             this.load = true 
-            this.$http.post(uri,this.service).then(response =>{ 
+            this.$http.post(uri, this.$qs.stringify(service), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then(response =>{ 
                 this.snackbar = true; //mengaktifkan snackbar 
                 this.color = 'green'; //memberi warna snackbar 
                 this.text = response.data.message; //memasukkan pesan ke snackbar 
@@ -224,14 +221,17 @@ export default {
             }) 
         }, 
         updateData(){ 
-             this.service.append('serviceName', this.form.serviceName); 
-            
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/service/' + this.updatedId; 
+            let service = {
+                id: this.updatedId,
+                serviceName: this.form.serviceName,
+                updatedBy: this.$store.getters.loggedInEmployee
+            }
+
+            var uri = this.$apiUrl + 'services/update' 
             this.load = true 
-            this.$http.post(uri,this.service).then(response =>{
+            this.$http.put(uri, this.$qs.stringify(service), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then(response =>{
             this.snackbar = true; //mengaktifkan snackbar 
             this.color = 'green'; //memberi warna snackbar 
             this.text = response.data.message; //memasukkan pesan ke snackbar 
@@ -254,11 +254,8 @@ export default {
             this.form.serviceName = item.serviceName;  
             this.updatedId = item.id 
         }, 
-        deleteData(deleteId){ //menghapus data 
-        // const auth = {
-        //         headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-        //     }
-            var uri = this.$apiUrl + '/service/' + deleteId; //data dihapus berdasarkan id 
+        deleteData(deleteId){ 
+            var uri = this.$apiUrl + 'services/delete/' + deleteId + '/' + this.$store.getters.loggedInEmployee
             this.$http.delete(uri).then(response =>{ 
                 this.snackbar = true; 
                 this.text = response.data.message; 
@@ -279,11 +276,13 @@ export default {
                 console.log("dddd")
                 this.updateData() 
             } 
-        }, 
+        },
+        closeForm() {
+            this.resetForm()
+            this.dialog = false
+        },
         resetForm(){ 
-            this.form = { 
-                serviceName : ''
-            } 
+            this.$refs.form.reset()
         } 
         }, 
         mounted(){ 

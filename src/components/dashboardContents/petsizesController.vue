@@ -72,7 +72,7 @@
                     <v-container> 
                         <v-row> 
                             <v-col cols="12"> 
-                                <v-overflow-btn class="my-2" :items="dropdown_font" label="Size*" v-model="form.size"></v-overflow-btn>
+                                <v-overflow-btn class="my-2" :items="dropdown_font" label="Ukuran*" v-model="form.size"></v-overflow-btn>
                             </v-col> 
 
                           
@@ -136,8 +136,7 @@ export default {
             form: { 
                 size : '', 
                 
-            }, 
-            petsize : new FormData, 
+            },
             typeInput: 'new', 
             errors : '', 
             updatedId : '', 
@@ -145,25 +144,23 @@ export default {
     }, 
     methods:{ 
         getData(){ 
-
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/petsize' 
+            var uri = this.$apiUrl + 'uni/petsizes/getall' 
             this.$http.get(uri).then(response =>{ 
-                this.petsizes=response.data.message 
+                this.petsizes=response.data.data
             }) 
         }, 
         sendData(){ 
-            this.petsize.append('size', this.form.size); 
-           
+            let petSize = {
+                size: this.form.size,
+                createdBy: this.$store.getters.loggedInEmployee
 
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri =this.$apiUrl + '/petsize' 
+            }
+
+            var uri =this.$apiUrl + 'petsizes/insert' 
             this.load = true 
-            this.$http.post(uri,this.petsize).then(response =>{ 
+            this.$http.post(uri, this.$qs.stringify(petSize), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then(response =>{ 
                 this.snackbar = true; //mengaktifkan snackbar 
                 this.color = 'green'; //memberi warna snackbar 
                 this.text = response.data.message; //memasukkan pesan ke snackbar 
@@ -181,14 +178,17 @@ export default {
             }) 
         }, 
         updateData(){ 
-             this.petsize.append('size', this.form.size); 
-           
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/petsize/' + this.updatedId; 
+            let petSize = {
+                id: this.updatedId,
+                size: this.form.size,
+                updatedBy: this.$store.getters.loggedInEmployee
+            }
+
+            var uri = this.$apiUrl + 'petsizes/update' 
             this.load = true 
-            this.$http.post(uri,this.petsize).then(response =>{
+            this.$http.put(uri, this.$qs.stringify(petSize), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then(response =>{
             this.snackbar = true; //mengaktifkan snackbar 
             this.color = 'green'; //memberi warna snackbar 
             this.text = response.data.message; //memasukkan pesan ke snackbar 
@@ -211,11 +211,8 @@ export default {
             this.form.size = item.size;  
             this.updatedId = item.id 
         }, 
-        deleteData(deleteId){ //menghapus data 
-        // const auth = {
-        //         headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-        //     }
-            var uri = this.$apiUrl + '/petsize/' + deleteId; //data dihapus berdasarkan id 
+        deleteData(deleteId){
+            var uri = this.$apiUrl + 'petsizes/delete/' + deleteId + '/' + this.$store.getters.loggedInEmployee
             this.$http.delete(uri).then(response =>{ 
                 this.snackbar = true; 
                 this.text = response.data.message; 

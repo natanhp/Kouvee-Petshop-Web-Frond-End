@@ -35,9 +35,9 @@
                 > 
                     <template v-slot:body="{ items }"> 
                         <tbody> 
-                            <tr v-for="(item,index) in items" :key="item.id"> 
+                            <tr v-for="(item,index) in items" :key="index"> 
                                 <td>{{ index + 1 }}</td> 
-                                <td>{{ item.pettype }}</td> 
+                                <td>{{ item.type }}</td> 
                                
                                 <td class="text-center"> 
                                     <v-btn 
@@ -69,7 +69,8 @@
                     <span class="headline">Data Tipe Hewan</span> 
                 </v-card-title> 
                 <v-card-text> 
-                    <v-container> 
+                    <v-form ref="form">
+                     <v-container> 
                         <v-row> 
                             <v-col cols="12"> 
                                 <v-text-field label="Tipe*" v-model="form.type" required></v-text-field> 
@@ -77,12 +78,13 @@
 
                           
                         </v-row> 
-                    </v-container>
+                        </v-container>
+                    </v-form>
                     <small>*Diharuskan untuk mengisi data</small> 
                 </v-card-text> 
                 <v-card-actions> 
                     <v-spacer></v-spacer> 
-                    <v-btn color="blue darken-1" text @click="dialog = false">Batal</v-btn> 
+                    <v-btn color="blue darken-1" text @click="closeForm()">Batal</v-btn> 
                     <v-btn color="blue darken-1" text @click="setForm()">Simpan</v-btn> 
                 </v-card-actions> 
             </v-card> 
@@ -113,8 +115,8 @@ export default {
             keyword: '', 
             headers: [ 
                 { 
-                    text: 'ID', 
-                    value: 'id', 
+                    text: 'No', 
+                    value: 'no', 
                 }, 
                 { 
                     text: 'Tipe', 
@@ -143,25 +145,22 @@ export default {
     }, 
     methods:{ 
         getData(){ 
-
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/pettype' 
+            var uri = this.$apiUrl + 'uni/pettypes/getall' 
             this.$http.get(uri).then(response =>{ 
-                this.pettypes=response.data.message 
+                this.pettypes=response.data.data 
             }) 
         }, 
         sendData(){ 
-            this.pettype.append('type', this.form.type); 
-           
+            let petTyoe = {
+                type: this.form.type,
+                createdBy: this.$store.getters.loggedInEmployee
+            }
 
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri =this.$apiUrl + '/pettype' 
+            var uri =this.$apiUrl + 'pettypes/insert' 
             this.load = true 
-            this.$http.post(uri,this.pettype).then(response =>{ 
+            this.$http.post(uri,this.$qs.stringify(petTyoe), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then(response =>{ 
                 this.snackbar = true; //mengaktifkan snackbar 
                 this.color = 'green'; //memberi warna snackbar 
                 this.text = response.data.message; //memasukkan pesan ke snackbar 
@@ -179,14 +178,17 @@ export default {
             }) 
         }, 
         updateData(){ 
-             this.pettype.append('type', this.form.type); 
-           
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/pettype/' + this.updatedId; 
+            let petTyoe = {
+                id: this.updatedId,
+                type: this.form.type,
+                updatedBy: this.$store.getters.loggedInEmployee
+            }
+
+            var uri = this.$apiUrl + 'pettypes/update' 
             this.load = true 
-            this.$http.post(uri,this.pettype).then(response =>{
+            this.$http.put(uri,this.$qs.stringify(petTyoe), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then(response =>{
             this.snackbar = true; //mengaktifkan snackbar 
             this.color = 'green'; //memberi warna snackbar 
             this.text = response.data.message; //memasukkan pesan ke snackbar 
@@ -200,7 +202,6 @@ export default {
             this.text = 'Try Again'; 
             this.color = 'red'; 
             this.load = false; 
-            this.typeInput = 'new'; 
         }) 
         }, 
         editHandler(item){ 
@@ -209,11 +210,8 @@ export default {
             this.form.type = item.type;  
             this.updatedId = item.id 
         }, 
-        deleteData(deleteId){ //menghapus data 
-        // const auth = {
-        //         headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-        //     }
-            var uri = this.$apiUrl + '/pettype/' + deleteId; //data dihapus berdasarkan id 
+        deleteData(deleteId){
+            var uri = this.$apiUrl + 'pettypes/delete/' + deleteId + '/' + this.$store.getters.loggedInEmployee
             this.$http.delete(uri).then(response =>{ 
                 this.snackbar = true; 
                 this.text = response.data.message; 
@@ -234,11 +232,13 @@ export default {
                 console.log("dddd")
                 this.updateData() 
             } 
-        }, 
+        },
+        closeForm() {
+            this.resetForm()
+            this.dialog = false
+        },
         resetForm(){ 
-            this.form = { 
-                type : ''
-            } 
+            this.$refs.form.reset()
         } 
         }, 
         mounted(){ 

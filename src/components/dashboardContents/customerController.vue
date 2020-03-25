@@ -2,7 +2,7 @@
     <v-container> 
         <v-card>
             <v-container grid-list-md mb-0>
-                <h2 class="text-md-center">Data Pegawai</h2> 
+                <h2 class="text-md-center">Data Customer</h2> 
                 <v-layout row wrap style="margin:10px"> 
                     <v-flex xs6> 
                         <v-btn
@@ -14,7 +14,7 @@
                         @click="dialog = true"
                         >
                         <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
-                            Tambah Pegawai
+                            Tambah Customer
                         </v-btn>
                     </v-flex>
                     <v-flex xs6 class="text-right"> 
@@ -31,7 +31,7 @@
             
                 <v-data-table 
                     :headers="headers" 
-                    :items="users" 
+                    :items="customers" 
                     :search="keyword" 
                     :loading="load" 
                 > 
@@ -40,7 +40,6 @@
                             <tr v-for="(item,index) in items" :key="index"> 
                                 <td>{{ index + 1 }}</td> 
                                 <td>{{ item.name }}</td> 
-                                <td>{{ item.role }}</td> 
                                 <td>{{ item.address}}</td> 
                                 <td>{{ item.dateBirth }}</td> 
                                 <td>{{item.phoneNumber}}</td>
@@ -81,10 +80,6 @@
                                 <v-text-field label="Nama*" v-model="form.name" :rules="[() => !!form.name || 'Nama tidak boleh kosong']" required></v-text-field> 
                             </v-col> 
 
-                            <v-col cols="12"> 
-                                <v-select :items="roleItems" v-model="form.role" label="Role*" :rules="[() => !!form.role || 'Role tidak boleh kosong']" required></v-select>
-                            </v-col> 
-
                             <v-col cols="12">
                                 <v-text-field label="Alamat*" v-model="form.address" :rules="[() => !!form.address || 'Nama tidak boleh kosong']" required></v-text-field>
                             </v-col>     
@@ -115,22 +110,6 @@
                             <v-col cols="12"> 
                                 <v-text-field label="Nomor Telepon*" v-model="form.phoneNumber" :rules="[() => !!form.phoneNumber.match(/^[0-9]*$/) && !!form.phoneNumber || 'Nomor telepon harus angka dan tidak boleh kosong']" required></v-text-field> 
                             </v-col> 
-
-                            <v-col cols="12"> 
-                                <v-text-field label="Username*" v-model="form.username" :rules="[() => !!form.username || 'Username tidak boleh kosong']" required></v-text-field> 
-                            </v-col> 
-
-                            <v-col cols="12"> 
-                                <v-text-field v-if="typeInput == 'new'" label="Password*" v-model="form.password" type="password" :rules="[() => !!form.password || 'Password tidak boleh kosong',
-                                                                                                                                                v => (!!v && v) === passwordConfirm|| 'Password tidak cocok']"  required></v-text-field> 
-                                <v-text-field v-else label="Password" v-model="form.password" type="password" :rules="[v => (!!v && v) === passwordConfirm|| 'Password tidak cocok']" required></v-text-field> 
-                            </v-col> 
-
-                            <v-col cols="12"> 
-                                <v-text-field v-if="typeInput == 'new'" label="Konfirmasi Password*" v-model="passwordConfirm" type="password" required></v-text-field> 
-                                <v-text-field v-else label="Konfirmasi Password" v-model="passwordConfirm" type="password" required></v-text-field> 
-                            </v-col> 
-
                         </v-row> 
                     </v-container>
                     </v-form>
@@ -205,10 +184,6 @@ export default {
                     value: 'name' 
                 },
                 { 
-                    text: 'Role', 
-                    value: 'role' 
-                },  
-                { 
                     text: 'Alamat', 
                     value: 'address' 
                 }, 
@@ -227,31 +202,20 @@ export default {
             ], 
 
 
-            users: [], 
+            customers: [], 
             snackbar: false, 
             color: null, 
             text: '', 
             load: false,
             form: { 
                 name : '', 
-                role : '',
                 address : '', 
                 dateBirth : '',
                 phoneNumber : '',
-                username: '',
-                password: '' 
             }, 
-            user : [], 
             typeInput: 'new', 
             errors : '', 
             updatedId : '',
-            roleItems: [
-                'Owner',
-                'CS',
-                'Kasir'
-            ],
-            employeeHasedPassword: '',
-            passwordConfirm: '',
         }
             // {items: [
             //     { title: 'Click Me1' },
@@ -273,25 +237,25 @@ export default {
             // }),
     methods:{ 
         getData(){ 
-            var uri = this.$apiUrl + 'employees/getall' 
+            var uri = this.$apiUrl + 'customers/getall' 
             this.$http.get(uri).then(response =>{ 
-                this.users=response.data.data
+                this.customers=response.data.data
             }) 
         }, 
         sendData(){ 
-            this.user = new FormData
-            this.user.append('name', this.form.name); 
-            this.user.append('role', this.form.role);
-            this.user.append('address', this.form.address);
-            this.user.append('dateBirth', this.form.dateBirth); 
-            this.user.append('phoneNumber', this.form.phoneNumber);
-            this.user.append('username', this.form.username);
-            this.user.append('password', this.form.password);
-            this.user.append('createdBy', this.$store.getters.loggedInEmployee)
+            let customer = {
+                name: this.form.name,
+                address: this.form.address,
+                dateBirth: this.form.dateBirth,
+                phoneNumber: this.form.phoneNumber,
+                createdBy: this.$store.getters.loggedInEmployee
+            }
 
-            var uri =this.$apiUrl + 'employees/insert' 
+            var uri =this.$apiUrl + 'customers/insert' 
             this.load = true 
-            this.$http.post(uri,this.user).then(response =>{ 
+            this.$http.post(uri, this.$qs.stringify(customer), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then(response =>{ 
                 this.snackbar = true; //mengaktifkan snackbar 
                 this.color = 'green'; //memberi warna snackbar 
                 this.text = response.data.message; //memasukkan pesan ke snackbar 
@@ -307,33 +271,20 @@ export default {
                 this.color = 'red'; 
                 this.load = false; 
             }) 
-        }, 
+        },
         updateData(){ 
-            let id = this.updatedId
-            let passwordHashed = this.employeeHasedPassword
-            
-            var user = {
-                id: id,
+           let customer = {
+                id: this.updatedId,
                 name: this.form.name,
-                role: this.form.role,
                 address: this.form.address,
                 dateBirth: this.form.dateBirth,
                 phoneNumber: this.form.phoneNumber,
-                username:this.form.username,
                 updatedBy: this.$store.getters.loggedInEmployee
             }
 
-            if (this.form.password === '' || this.form.password === undefined){
-                user['password'] = passwordHashed;
-                console.log(user.password)
-            } else {
-                user['password'] = this.form.password
-                console.log(this.form.password)
-            }
-            
-            var uri = this.$apiUrl + 'employees/update'; 
+            var uri = this.$apiUrl + 'customers/update'; 
             this.load = true 
-            this.$http.put(uri,this.$qs.stringify(user), {headers: {
+            this.$http.put(uri,this.$qs.stringify(customer), {headers: {
             'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
         }}).then(response =>{
             this.snackbar = true; //mengaktifkan snackbar 
@@ -355,17 +306,14 @@ export default {
         editHandler(item){ 
             this.typeInput = 'edit' 
             this.dialog = true
-            this.form.name = item.name 
-            this.form.role = item.role
+            this.form.name = item.name
             this.form.address = item.address 
             this.form.dateBirth = item.dateBirth
             this.form.phoneNumber = item.phoneNumber
-            this.form.username = item.username
             this.updatedId = item.id
-            this.employeeHasedPassword = item.password
         }, 
         deleteData(deleteId){
-            var uri = this.$apiUrl + 'employees/delete/' + deleteId + '/' + this.$store.getters.loggedInEmployee;
+            var uri = this.$apiUrl + 'customers/delete/' + deleteId + '/' + this.$store.getters.loggedInEmployee;
             this.$http.delete(uri).then(response =>{ 
                 this.snackbar = true; 
                 this.text = response.data.message; 
@@ -394,9 +342,6 @@ export default {
             this.resetForm()
             this.dialog = false
             this.typeInput = 'new'
-        },
-        validateForm() {
-            this.$refs.form.validate()
         }
         }, 
         mounted(){ 

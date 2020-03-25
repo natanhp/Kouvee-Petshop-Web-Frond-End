@@ -16,7 +16,7 @@
                                              <v-col>                                    
                                                 <div class="form">                               
                                                     <v-text-field 
-                                                        v-model="form.email" label="Email" type="text" color="teal accent-3" prepend-icon="email" outlined height=50>
+                                                        v-model="form.username" label="Email" type="text" color="teal accent-3" prepend-icon="email" outlined height=50>
                                                     </v-text-field>
 
                                                     <v-text-field 
@@ -61,52 +61,28 @@ export default {
         return {
             checkbox: false,
             form : {
-                email : null,
-                password : null,
+                username : '',
+                password : '',
             },
 
-            user: new FormData,
-            user2: new FormData,
+            user: '',
             users:[],
         }
     },
     methods :
     {
         loginUser(){
-            var url = this.$apiUrl + '/auth'
-            var urldata = this.$apiUrl + '/User/info'
-            var urlemail = this.$apiUrl + '/User/userlogin'
-            this.user = new FormData()
-            this.user2 = new FormData()
-            this.user.append('email', this.form.email)
-            this.user.append('password', this.form.password)
-            this.user2.append('email', this.form.email)
-            this.$http.post(urlemail,this.user).then(response => {
-                if(response.data.message === "Berhasil")
-                {
-                    this.$http.post(url,this.user).then(response =>{
-                        if(response.data.token)
-                        {
-                            this.$http.post(urldata,this.user2).then(response2 =>{
-                                localStorage.setItem("Role", response2.data.role)
-                                localStorage.setItem("Email", response2.data.email)
-                            })
-                            localStorage.setItem("Token", response.data.token)
-                            this.$router.push({name : 'home'})
-                        }
-                        else
-                        {
-                            alert('Hiya Hiya Hiya Salah wkwk... Coba Lagi :p')
-                        }
-                    })
-                }
-                else
-                {
-                    alert("Email not Verified!");
-                }
-            })
-
-            
+            // this.user = new FormData()
+            // this.user.append("username", this.form.username)
+            // this.user.append("password", this.form.password)
+            // this.$http.post(this.$apiUrl + 'login',this.user).then(response => {
+            //     console.log(response)
+            // })  
+            let username = this.form.username 
+            let password = this.form.password
+            this.$store.dispatch('login', { username, password })
+            .then(() => console.log("Sukses"))
+            .catch(err => console.log(err))
         },
     },
 }

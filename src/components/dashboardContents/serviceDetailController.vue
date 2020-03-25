@@ -2,7 +2,7 @@
     <v-container> 
         <v-card>
             <v-container grid-list-md mb-0>
-                <h2 class="text-md-center">Data Pegawai</h2> 
+                <h2 class="text-md-center">Data Detail Layanan</h2> 
                 <v-layout row wrap style="margin:10px"> 
                     <v-flex xs6> 
                         <v-btn
@@ -14,7 +14,7 @@
                         @click="dialog = true"
                         >
                         <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
-                            Tambah Pegawai
+                            Tambah Detail Layanan
                         </v-btn>
                     </v-flex>
                     <v-flex xs6 class="text-right"> 
@@ -31,19 +31,17 @@
             
                 <v-data-table 
                     :headers="headers" 
-                    :items="users" 
+                    :items="serviceDetails" 
                     :search="keyword" 
                     :loading="load" 
                 > 
                     <template v-slot:body="{ items }"> 
                         <tbody> 
-                            <tr v-for="(item,index) in items" :key="index"> 
+                            <tr v-for="(item,index) in items" :key="item.id"> 
                                 <td>{{ index + 1 }}</td> 
-                                <td>{{ item.name }}</td> 
-                                <td>{{ item.role }}</td> 
-                                <td>{{ item.address}}</td> 
-                                <td>{{ item.dateBirth }}</td> 
-                                <td>{{item.phoneNumber}}</td>
+                                <td>{{ item.completeName }}</td> 
+                                <td>{{ item.price }}</td> 
+                        
                                 <td class="text-center"> 
                                     <v-btn 
                                         icon 
@@ -71,74 +69,32 @@
         <v-dialog v-model="dialog" persistent max-width="600px"> 
             <v-card> 
                 <v-card-title> 
-                    <span class="headline">Data Pegawai</span> 
+                    <span class="headline">Data Layanan</span> 
                 </v-card-title> 
                 <v-card-text> 
-                    <v-form ref="form">
-                    <v-container> 
+                     <v-form ref="form">
+                        <v-container> 
                         <v-row> 
                             <v-col cols="12"> 
-                                <v-text-field label="Nama*" v-model="form.name" :rules="[() => !!form.name || 'Nama tidak boleh kosong']" required></v-text-field> 
+                                <v-select class="my-2" :items="services" label="Layanan*" item-text="service" v-model="form.service" required></v-select>
                             </v-col> 
-
                             <v-col cols="12"> 
-                                <v-select :items="roleItems" v-model="form.role" label="Role*" :rules="[() => !!form.role || 'Role tidak boleh kosong']" required></v-select>
+                                <v-select class="my-2" :items="petTypes" label="Tipe*" item-text="type" v-model="form.petType" required></v-select>
                             </v-col> 
-
-                            <v-col cols="12">
-                                <v-text-field label="Alamat*" v-model="form.address" :rules="[() => !!form.address || 'Nama tidak boleh kosong']" required></v-text-field>
-                            </v-col>     
-
                             <v-col cols="12"> 
-                                <v-menu
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    transition="scale-transition"
-                                    offset-y
-                                    min-width="290px"
-                                >
-                                    <template v-slot:activator="{ on }">
-                                    <v-text-field
-                                        v-model="form.dateBirth"
-                                        label="Tanggal Lahir*"
-                                        prepend-icon="event"
-                                        readonly
-                                        :rules="[() => !!form.dateBirth || 'Tanggal lahir tidak boleh kosong']"
-                                        required
-                                        v-on="on"
-                                    ></v-text-field>
-                                    </template>
-                                    <v-date-picker v-model="form.dateBirth"></v-date-picker>
-                                </v-menu>
+                                <v-select class="my-2" :items="petSizes" label="Ukuran*" item-text="size" v-model="form.petSize" required></v-select>
+                            </v-col> 
+                            <v-col cols="12"> 
+                                <v-text-field label="*Harga Layanan" v-model="form.price" required></v-text-field>
                             </v-col>
-
-                            <v-col cols="12"> 
-                                <v-text-field label="Nomor Telepon*" v-model="form.phoneNumber" :rules="[() => !!form.phoneNumber.match(/^[0-9]*$/) && !!form.phoneNumber || 'Nomor telepon harus angka dan tidak boleh kosong']" required></v-text-field> 
-                            </v-col> 
-
-                            <v-col cols="12"> 
-                                <v-text-field label="Username*" v-model="form.username" :rules="[() => !!form.username || 'Username tidak boleh kosong']" required></v-text-field> 
-                            </v-col> 
-
-                            <v-col cols="12"> 
-                                <v-text-field v-if="typeInput == 'new'" label="Password*" v-model="form.password" type="password" :rules="[() => !!form.password || 'Password tidak boleh kosong',
-                                                                                                                                                v => (!!v && v) === passwordConfirm|| 'Password tidak cocok']"  required></v-text-field> 
-                                <v-text-field v-else label="Password" v-model="form.password" type="password" :rules="[v => (!!v && v) === passwordConfirm|| 'Password tidak cocok']" required></v-text-field> 
-                            </v-col> 
-
-                            <v-col cols="12"> 
-                                <v-text-field v-if="typeInput == 'new'" label="Konfirmasi Password*" v-model="passwordConfirm" type="password" required></v-text-field> 
-                                <v-text-field v-else label="Konfirmasi Password" v-model="passwordConfirm" type="password" required></v-text-field> 
-                            </v-col> 
-
                         </v-row> 
-                    </v-container>
-                    </v-form>
+                        </v-container>
+                     </v-form>
                     <small>*Diharuskan untuk mengisi data</small> 
                 </v-card-text> 
                 <v-card-actions> 
                     <v-spacer></v-spacer> 
-                    <v-btn color="blue darken-1" text @click="closeCreateDialog()">Batal</v-btn> 
+                    <v-btn color="blue darken-1" text @click="closeForm()">Batal</v-btn> 
                     <v-btn color="blue darken-1" text @click="setForm()">Simpan</v-btn> 
                 </v-card-actions> 
             </v-card> 
@@ -193,7 +149,6 @@ export default {
     data () { 
         return { 
             dialog: false, 
-            calendarDialog: false,
             keyword: '', 
             headers: [ 
                 { 
@@ -201,25 +156,13 @@ export default {
                     value: 'no', 
                 }, 
                 { 
-                    text: 'Nama', 
-                    value: 'name' 
+                    text: 'Nama Layanan', 
+                    value: 'completeName' 
                 },
                 { 
-                    text: 'Role', 
-                    value: 'role' 
+                    text: 'Harga', 
+                    value: 'price' 
                 },  
-                { 
-                    text: 'Alamat', 
-                    value: 'address' 
-                }, 
-                { 
-                    text: 'Tanggal Lahir', 
-                    value: 'dateBirth' 
-                }, 
-                {
-                    text: 'Nomor Telepon',
-                    value: 'phoneNumber'
-                },
                 { 
                     text: 'Aksi', 
                     value: null 
@@ -227,31 +170,24 @@ export default {
             ], 
 
 
-            users: [], 
+            serviceDetails: [], 
             snackbar: false, 
             color: null, 
             text: '', 
             load: false,
             form: { 
-                name : '', 
-                role : '',
-                address : '', 
-                dateBirth : '',
-                phoneNumber : '',
-                username: '',
-                password: '' 
-            }, 
-            user : [], 
+                service: '',
+                petType: '',
+                petSize : '', 
+                price: ''
+               
+            },
+            services: [],
+            petTypes: [],
+            petSizes: [],
             typeInput: 'new', 
             errors : '', 
-            updatedId : '',
-            roleItems: [
-                'Owner',
-                'CS',
-                'Kasir'
-            ],
-            employeeHasedPassword: '',
-            passwordConfirm: '',
+            updatedId : '', 
         }
             // {items: [
             //     { title: 'Click Me1' },
@@ -273,25 +209,93 @@ export default {
             // }),
     methods:{ 
         getData(){ 
-            var uri = this.$apiUrl + 'employees/getall' 
+            var uri = this.$apiUrl + 'noa/servicedetails/getall' 
             this.$http.get(uri).then(response =>{ 
-                this.users=response.data.data
+                this.serviceDetails = []
+                response.data.data.forEach(element => {
+                    this.serviceDetails.push({
+                        completeName: element.complete_name,
+                        id: element.service_detail.id,
+                        price: element.service_detail.price,
+                        petTypeId: element.service_detail.PetTypes_id,
+                        petSizeId: element.service_detail.PetSizes_id,
+                        serviceId: element.service_detail.Services_id
+                    })
+                }); 
             }) 
-        }, 
+        },
+        getServices() {
+                var uri = this.$apiUrl + 'services/getall'
+                this.$http.get(uri).then(response =>{
+                    this.services = [] 
+                    response.data.data.forEach(element => {
+                        this.services.push({
+                            id: element.id,
+                            service: element.serviceName
+                        })
+                    }) 
+                }) 
+        },
+        getPetSizes() {
+                var uri = this.$apiUrl + 'uni/petsizes/getall'
+                this.$http.get(uri).then(response =>{
+                    this.petSizes = [] 
+                    response.data.data.forEach(element => {
+                        this.petSizes.push({
+                            id: element.id,
+                            size: element.size
+                        })
+                    }) 
+                }) 
+        },
+        getPetTypes() {
+                var uri = this.$apiUrl + 'uni/pettypes/getall'
+                this.$http.get(uri).then(response =>{
+                    this.petTypes = []  
+                    response.data.data.forEach(element => {
+                        this.petTypes.push({
+                            id: element.id,
+                            type: element.type
+                        })
+                    }) 
+                }) 
+        },
         sendData(){ 
-            this.user = new FormData
-            this.user.append('name', this.form.name); 
-            this.user.append('role', this.form.role);
-            this.user.append('address', this.form.address);
-            this.user.append('dateBirth', this.form.dateBirth); 
-            this.user.append('phoneNumber', this.form.phoneNumber);
-            this.user.append('username', this.form.username);
-            this.user.append('password', this.form.password);
-            this.user.append('createdBy', this.$store.getters.loggedInEmployee)
+            var serviceId = ''
+            var petTypeId = ''
+            var petSizeId = ''
 
-            var uri =this.$apiUrl + 'employees/insert' 
+            this.services.forEach(element => {
+                if(element.service === this.form.service) {
+                    serviceId = element.id
+                }
+            })
+
+            this.petTypes.forEach(element => {
+                if(element.type === this.form.petType) {
+                    petTypeId = element.id
+                }
+            })
+
+            this.petSizes.forEach(element => {
+                if(element.size === this.form.petSize) {
+                    petSizeId = element.id
+                }
+            })
+
+            let serviceDetail = {
+                Services_id: serviceId,
+                PetTypes_id: petTypeId,
+                PetSizes_id: petSizeId,
+                price: this.form.price,
+                createdBy: this.$store.getters.loggedInEmployee
+            }
+
+            var uri =this.$apiUrl + 'servicedetails/insert' 
             this.load = true 
-            this.$http.post(uri,this.user).then(response =>{ 
+            this.$http.post(uri, this.$qs.stringify(serviceDetail), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then(response =>{ 
                 this.snackbar = true; //mengaktifkan snackbar 
                 this.color = 'green'; //memberi warna snackbar 
                 this.text = response.data.message; //memasukkan pesan ke snackbar 
@@ -309,33 +313,42 @@ export default {
             }) 
         }, 
         updateData(){ 
-            let id = this.updatedId
-            let passwordHashed = this.employeeHasedPassword
-            
-            var user = {
-                id: id,
-                name: this.form.name,
-                role: this.form.role,
-                address: this.form.address,
-                dateBirth: this.form.dateBirth,
-                phoneNumber: this.form.phoneNumber,
-                username:this.form.username,
+            var serviceId = ''
+            var petTypeId = ''
+            var petSizeId = ''
+
+            this.services.forEach(element => {
+                if(element.service === this.form.service) {
+                    serviceId = element.id
+                }
+            })
+
+            this.petTypes.forEach(element => {
+                if(element.type === this.form.petType) {
+                    petTypeId = element.id
+                }
+            })
+
+            this.petSizes.forEach(element => {
+                if(element.size === this.form.petSize) {
+                    petSizeId = element.id
+                }
+            })
+
+            let serviceDetail = {
+                id: this.updatedId,
+                Services_id: serviceId,
+                PetTypes_id: petTypeId,
+                PetSizes_id: petSizeId,
+                price: this.form.price,
                 updatedBy: this.$store.getters.loggedInEmployee
             }
 
-            if (this.form.password === '' || this.form.password === undefined){
-                user['password'] = passwordHashed;
-                console.log(user.password)
-            } else {
-                user['password'] = this.form.password
-                console.log(this.form.password)
-            }
-            
-            var uri = this.$apiUrl + 'employees/update'; 
+            var uri = this.$apiUrl + 'servicedetails/update' 
             this.load = true 
-            this.$http.put(uri,this.$qs.stringify(user), {headers: {
+            this.$http.put(uri, this.$qs.stringify(serviceDetail), {headers: {
             'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
-        }}).then(response =>{
+            }}).then(response =>{
             this.snackbar = true; //mengaktifkan snackbar 
             this.color = 'green'; //memberi warna snackbar 
             this.text = response.data.message; //memasukkan pesan ke snackbar 
@@ -349,23 +362,22 @@ export default {
             this.text = 'Try Again'; 
             this.color = 'red'; 
             this.load = false; 
-            this.typeInput = 'edit'; 
+            this.typeInput = 'new'; 
         }) 
         }, 
         editHandler(item){ 
-            this.typeInput = 'edit' 
-            this.dialog = true
-            this.form.name = item.name 
-            this.form.role = item.role
-            this.form.address = item.address 
-            this.form.dateBirth = item.dateBirth
-            this.form.phoneNumber = item.phoneNumber
-            this.form.username = item.username
-            this.updatedId = item.id
-            this.employeeHasedPassword = item.password
+            this.typeInput = 'edit'; 
+            this.dialog = true; 
+
+            this.form.service = this.getServiceFromId(item.serviceId)
+            this.form.petType = this.getPetTypeFromId(item.petTypeId)
+            this.form.petSize = this.getPetSizeFromId(item.petSizeId)
+            this.form.price = item.price
+
+            this.updatedId = item.id 
         }, 
-        deleteData(deleteId){
-            var uri = this.$apiUrl + 'employees/delete/' + deleteId + '/' + this.$store.getters.loggedInEmployee;
+        deleteData(deleteId){ 
+            var uri = this.$apiUrl + 'servicedetails/delete/' + deleteId
             this.$http.delete(uri).then(response =>{ 
                 this.snackbar = true; 
                 this.text = response.data.message; 
@@ -383,27 +395,67 @@ export default {
             if (this.typeInput === 'new') { 
                 this.sendData() 
             } else { 
-                console.log("dddd")
                 this.updateData() 
             } 
-        }, 
-        resetForm(){ 
-           this.$refs.form.reset()
         },
-        closeCreateDialog() {
+        closeForm() {
             this.resetForm()
             this.dialog = false
-            this.typeInput = 'new'
         },
-        validateForm() {
-            this.$refs.form.validate()
+        resetForm(){ 
+            this.$refs.form.reset()
+        },
+        getServiceFromId(id) {
+            let start = 0
+            let end = this.services.length-1
+
+            while(start <= end) {
+                let mid = Math.floor((start + end)/2)
+                if(this.services[mid].id === id) {
+                    return this.services[mid].service
+                }else if(this.services[mid].id < id) {
+                    start = mid + 1;
+                } else {
+                    end = mid - 1;
+                }
+            }
+        },
+        getPetTypeFromId(id) {
+            let start = 0
+            let end = this.petTypes.length-1
+
+            while(start <= end) {
+                let mid = Math.floor((start + end)/2)
+                if(this.petTypes[mid].id === id) {
+                    return this.petTypes[mid].type
+                }else if(this.petTypes[mid].id < id) {
+                    start = mid + 1;
+                } else {
+                    end = mid - 1;
+                }
+            }
+        },
+        getPetSizeFromId(id) {
+            let start = 0
+            let end = this.petSizes.length-1
+
+            while(start <= end) {
+                let mid = Math.floor((start + end)/2)
+                if(this.petSizes[mid].id === id) {
+                    return this.petSizes[mid].size
+                }else if(this.petSizes[mid].id < id) {
+                    start = mid + 1;
+                } else {
+                    end = mid - 1;
+                }
+            }
         }
         }, 
         mounted(){ 
-            this.getData(); 
-        }, 
-        watch: {
-            passwordConfirm: 'validateForm'
+            this.getData()
+            this.getServices()
+            this.getPetTypes()
+            this.getPetSizes()
         }
     } 
 </script>
