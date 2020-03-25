@@ -71,13 +71,15 @@
                     <span class="headline">Data Layanan</span> 
                 </v-card-title> 
                 <v-card-text> 
-                    <v-container> 
+                     <v-form ref="form">
+                        <v-container> 
                         <v-row> 
                             <v-col cols="12"> 
                                 <v-text-field label="Nama Layanan*" v-model="form.serviceName" required></v-text-field> 
                             </v-col> 
                         </v-row> 
-                    </v-container>
+                        </v-container>
+                     </v-form>
                     <small>*Diharuskan untuk mengisi data</small> 
                 </v-card-text> 
                 <v-card-actions> 
@@ -140,8 +142,8 @@ export default {
             keyword: '', 
             headers: [ 
                 { 
-                    text: 'ID', 
-                    value: 'id', 
+                    text: 'N', 
+                    value: 'no', 
                 }, 
                 { 
                     text: 'Nama Layanan', 
@@ -162,8 +164,7 @@ export default {
             form: { 
                 serviceName : '', 
                
-            }, 
-            service : new FormData, 
+            },
             typeInput: 'new', 
             errors : '', 
             updatedId : '', 
@@ -194,15 +195,15 @@ export default {
             }) 
         }, 
         sendData(){ 
-            this.service.append('serviceName', this.form.serviceName); 
-            
-
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri =this.$apiUrl + '/service' 
+            let service = {
+                serviceName: this.form.serviceName,
+                createdBy: this.$store.getters.loggedInEmployee
+            }
+            var uri =this.$apiUrl + 'services/insert' 
             this.load = true 
-            this.$http.post(uri,this.service).then(response =>{ 
+            this.$http.post(uri, this.$qs.stringify(service), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then(response =>{ 
                 this.snackbar = true; //mengaktifkan snackbar 
                 this.color = 'green'; //memberi warna snackbar 
                 this.text = response.data.message; //memasukkan pesan ke snackbar 
@@ -275,11 +276,13 @@ export default {
                 console.log("dddd")
                 this.updateData() 
             } 
-        }, 
+        },
+        closeForm() {
+            this.resetForm()
+            this.dialog = false
+        },
         resetForm(){ 
-            this.form = { 
-                serviceName : ''
-            } 
+            this.$refs.form.reset()
         } 
         }, 
         mounted(){ 
