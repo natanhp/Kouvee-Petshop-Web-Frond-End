@@ -243,19 +243,19 @@ export default {
             }) 
         }, 
         sendData(){ 
-            this.user = new FormData
-            this.user.append('name', this.form.name); 
-            this.user.append('role', this.form.role);
-            this.user.append('address', this.form.address);
-            this.user.append('dateBirth', this.form.dateBirth); 
-            this.user.append('phoneNumber', this.form.phoneNumber);
-            this.user.append('username', this.form.username);
-            this.user.append('password', this.form.password);
-            this.user.append('createdBy', this.$store.getters.loggedInEmployee)
+            let customer = {
+                name: this.form.name,
+                address: this.form.address,
+                dateBirth: this.form.dateBirth,
+                phoneNumber: this.form.phoneNumber,
+                createdBy: this.$store.getters.loggedInEmployee
+            }
 
-            var uri =this.$apiUrl + 'employees/insert' 
+            var uri =this.$apiUrl + 'customers/insert' 
             this.load = true 
-            this.$http.post(uri,this.user).then(response =>{ 
+            this.$http.post(uri, this.$qs.stringify(customer), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then(response =>{ 
                 this.snackbar = true; //mengaktifkan snackbar 
                 this.color = 'green'; //memberi warna snackbar 
                 this.text = response.data.message; //memasukkan pesan ke snackbar 
