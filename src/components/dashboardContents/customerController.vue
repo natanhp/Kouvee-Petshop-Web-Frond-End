@@ -271,35 +271,20 @@ export default {
                 this.color = 'red'; 
                 this.load = false; 
             }) 
-        }, 
-            employeeHasedPassword: '',
-            passwordConfirm: '',
+        },
         updateData(){ 
-            let id = this.updatedId
-            let passwordHashed = this.employeeHasedPassword
-            
-            var user = {
-                id: id,
+           let customer = {
+                id: this.updatedId,
                 name: this.form.name,
-                role: this.form.role,
                 address: this.form.address,
                 dateBirth: this.form.dateBirth,
                 phoneNumber: this.form.phoneNumber,
-                username:this.form.username,
                 updatedBy: this.$store.getters.loggedInEmployee
             }
 
-            if (this.form.password === '' || this.form.password === undefined){
-                user['password'] = passwordHashed;
-                console.log(user.password)
-            } else {
-                user['password'] = this.form.password
-                console.log(this.form.password)
-            }
-            
-            var uri = this.$apiUrl + 'employees/update'; 
+            var uri = this.$apiUrl + 'customers/update'; 
             this.load = true 
-            this.$http.put(uri,this.$qs.stringify(user), {headers: {
+            this.$http.put(uri,this.$qs.stringify(customer), {headers: {
             'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
         }}).then(response =>{
             this.snackbar = true; //mengaktifkan snackbar 
@@ -321,14 +306,11 @@ export default {
         editHandler(item){ 
             this.typeInput = 'edit' 
             this.dialog = true
-            this.form.name = item.name 
-            this.form.role = item.role
+            this.form.name = item.name
             this.form.address = item.address 
             this.form.dateBirth = item.dateBirth
             this.form.phoneNumber = item.phoneNumber
-            this.form.username = item.username
             this.updatedId = item.id
-            this.employeeHasedPassword = item.password
         }, 
         deleteData(deleteId){
             var uri = this.$apiUrl + 'employees/delete/' + deleteId + '/' + this.$store.getters.loggedInEmployee;
