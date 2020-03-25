@@ -35,9 +35,9 @@
                 > 
                     <template v-slot:body="{ items }"> 
                         <tbody> 
-                            <tr v-for="(item,index) in items" :key="item.id"> 
+                            <tr v-for="(item,index) in items" :key="index"> 
                                 <td>{{ index + 1 }}</td> 
-                                <td>{{ item.pettype }}</td> 
+                                <td>{{ item.type }}</td> 
                                
                                 <td class="text-center"> 
                                     <v-btn 
@@ -113,8 +113,8 @@ export default {
             keyword: '', 
             headers: [ 
                 { 
-                    text: 'ID', 
-                    value: 'id', 
+                    text: 'No', 
+                    value: 'no', 
                 }, 
                 { 
                     text: 'Tipe', 
@@ -143,13 +143,9 @@ export default {
     }, 
     methods:{ 
         getData(){ 
-
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/pettype' 
+            var uri = this.$apiUrl + 'uni/pettypes/getall' 
             this.$http.get(uri).then(response =>{ 
-                this.pettypes=response.data.message 
+                this.pettypes=response.data.data 
             }) 
         }, 
         sendData(){ 
