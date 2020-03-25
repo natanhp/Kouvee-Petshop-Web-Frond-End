@@ -210,11 +210,8 @@ export default {
             this.form.type = item.type;  
             this.updatedId = item.id 
         }, 
-        deleteData(deleteId){ //menghapus data 
-        // const auth = {
-        //         headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-        //     }
-            var uri = this.$apiUrl + '/pettype/' + deleteId; //data dihapus berdasarkan id 
+        deleteData(deleteId){
+            var uri = this.$apiUrl + 'pettypes/delete/' + deleteId + '/' + this.$store.getters.loggedInEmployee
             this.$http.delete(uri).then(response =>{ 
                 this.snackbar = true; 
                 this.text = response.data.message; 
