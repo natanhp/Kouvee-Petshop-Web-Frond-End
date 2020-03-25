@@ -94,6 +94,15 @@ const routes = [
                     requiresAuth: true,
                     role: "CS"
                 } 
+            },
+            {
+                name: 'petController',
+                path: '/pet',
+                component: loadView('petController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "CS"
+                } 
             }
         ],     
     },   
