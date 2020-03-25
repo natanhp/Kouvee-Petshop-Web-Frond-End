@@ -142,7 +142,7 @@ export default {
             keyword: '', 
             headers: [ 
                 { 
-                    text: 'N', 
+                    text: 'No', 
                     value: 'no', 
                 }, 
                 { 
