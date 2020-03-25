@@ -254,11 +254,8 @@ export default {
             this.form.serviceName = item.serviceName;  
             this.updatedId = item.id 
         }, 
-        deleteData(deleteId){ //menghapus data 
-        // const auth = {
-        //         headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-        //     }
-            var uri = this.$apiUrl + '/service/' + deleteId; //data dihapus berdasarkan id 
+        deleteData(deleteId){ 
+            var uri = this.$apiUrl + 'services/delete/' + deleteId + '/' + this.$store.getters.loggedInEmployee
             this.$http.delete(uri).then(response =>{ 
                 this.snackbar = true; 
                 this.text = response.data.message; 
