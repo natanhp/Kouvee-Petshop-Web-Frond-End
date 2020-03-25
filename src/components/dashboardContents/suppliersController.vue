@@ -73,7 +73,7 @@
                 </v-card-title> 
                 <v-card-text> 
                      <v-form ref="form">
-                    <v-container> 
+                        <v-container> 
                         <v-row> 
                            
                                
@@ -89,7 +89,7 @@
                             </v-col> 
                             
                         </v-row> 
-                    </v-container>
+                        </v-container>
                     </v-form>
                     <small>*Diharuskan untuk mengisi data</small> 
                 </v-card-text> 
