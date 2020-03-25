@@ -142,32 +142,32 @@ export default {
             keyword: '',    
             headers: [ 
                 { 
-                    text: 'ID', 
-                    value: 'id', 
+                    text: 'No', 
+                    value: 'no', 
                 }, 
                 { 
                     text: 'Gambar Produk', 
-                    value: 'productImage' 
+                    value: 'img_url' 
                 },
                 { 
                     text: 'Nama Produk', 
-                    value: 'productName' 
+                    value: 'product.productName' 
                 },
                 { 
                     text: 'Jumlah Produk', 
-                    value: 'productQuantity' 
+                    value: 'product.productQuantity' 
                 },
                 { 
                     text: 'Harga Produk', 
-                    value: 'productPrice' 
+                    value: 'product.productPrice' 
                 },
                 { 
                     text: 'Satuan Produk', 
-                    value: 'meassurement' 
+                    value: 'product.meassurement' 
                 },
                 { 
                     text: 'Jumlah Minimum', 
-                    value: 'minimumQty' 
+                    value: 'product.minimumQty' 
                 }, 
             ], 
             data: [], 
