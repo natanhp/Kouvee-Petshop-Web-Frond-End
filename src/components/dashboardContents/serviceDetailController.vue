@@ -336,12 +336,12 @@ export default {
             })
 
             let serviceDetail = {
-                id: this.updatedId,
-                Services_id: serviceId,
-                PetTypes_id: petTypeId,
-                PetSizes_id: petSizeId,
-                price: this.form.price,
-                updatedBy: this.$store.getters.loggedInEmployee
+                // id: this.updatedId,
+                // Services_id: serviceId,
+                // PetTypes_id: petTypeId,
+                // PetSizes_id: petSizeId,
+                // price: this.form.price,
+                // updatedBy: this.$store.getters.loggedInEmployee
             }
 
             var uri = this.$apiUrl + 'servicedetails/update' 
@@ -367,25 +367,11 @@ export default {
         }, 
         editHandler(item){ 
             this.typeInput = 'edit'; 
-            this.dialog = true;
-            this.services.forEach(element => {
-                if(element.id === item.serviceId) {
-                    this.form.service = element.service   
-                }
-            }) 
+            this.dialog = true; 
 
-            this.petTypes.forEach(element => {
-                if(element.id === item.petTypeId) {
-                    this.form.petType = element.type
-                }
-            })
-
-            this.petSizes.forEach(element => {
-                if(element.id === item.petSizeId) {
-                    this.form.petSize = element.size
-                }
-            })
-
+            this.form.service = this.getServiceFromId(item.serviceId)
+            this.form.petType = this.getPetTypeFromId(item.petTypeId)
+            this.form.petSize = this.getPetSizeFromId(item.petSizeId)
             this.form.price = item.price
 
             this.updatedId = item.id 
@@ -419,6 +405,51 @@ export default {
         resetForm(){ 
             this.$refs.form.reset()
         },
+        getServiceFromId(id) {
+            let start = 0
+            let end = this.services.length-1
+
+            while(start <= end) {
+                let mid = Math.floor((start + end)/2)
+                if(this.services[mid].id === id) {
+                    return this.services[mid].service
+                }else if(this.services[mid].id < id) {
+                    start = mid + 1;
+                } else {
+                    end = mid - 1;
+                }
+            }
+        },
+        getPetTypeFromId(id) {
+            let start = 0
+            let end = this.petTypes.length-1
+
+            while(start <= end) {
+                let mid = Math.floor((start + end)/2)
+                if(this.petTypes[mid].id === id) {
+                    return this.petTypes[mid].type
+                }else if(this.petTypes[mid].id < id) {
+                    start = mid + 1;
+                } else {
+                    end = mid - 1;
+                }
+            }
+        },
+        getPetSizeFromId(id) {
+            let start = 0
+            let end = this.petSizes.length-1
+
+            while(start <= end) {
+                let mid = Math.floor((start + end)/2)
+                if(this.petSizes[mid].id === id) {
+                    return this.petSizes[mid].size
+                }else if(this.petSizes[mid].id < id) {
+                    start = mid + 1;
+                } else {
+                    end = mid - 1;
+                }
+            }
+        }
         }, 
         mounted(){ 
             this.getData()
