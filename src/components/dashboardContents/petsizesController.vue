@@ -145,13 +145,9 @@ export default {
     }, 
     methods:{ 
         getData(){ 
-
-            // const auth = {
-            //     headers: {Authorization: 'Bearer' + this.$cookie.get('TOKEN')} 
-            // }
-            var uri = this.$apiUrl + '/petsize' 
+            var uri = this.$apiUrl + 'uni/petsizes/getall' 
             this.$http.get(uri).then(response =>{ 
-                this.petsizes=response.data.message 
+                this.petsizes=response.data.data
             }) 
         }, 
         sendData(){ 
