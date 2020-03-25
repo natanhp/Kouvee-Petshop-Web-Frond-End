@@ -253,6 +253,7 @@ export default {
                 this.pets = []
                 response.data.data.forEach(element => {
                     this.pets.push({
+                        id: element.pet.id,
                         name: element.pet.name,
                         dateBirth: element.pet.dateBirth,
                         type: element.type,
@@ -307,7 +308,7 @@ export default {
             var petSizeId = ''
 
             this.customers.forEach(element => {
-                if(element.name === this.form.service) {
+                if(element.customer === this.form.customer) {
                     customerId = element.id
                 }
             })
@@ -355,13 +356,13 @@ export default {
             }) 
         }, 
         updateData(){ 
-            var serviceId = ''
+            var customerId = ''
             var petTypeId = ''
             var petSizeId = ''
 
-            this.services.forEach(element => {
-                if(element.service === this.form.service) {
-                    serviceId = element.id
+            this.customers.forEach(element => {
+                if(element.customer === this.form.customer) {
+                    customerId = element.id
                 }
             })
 
@@ -377,18 +378,19 @@ export default {
                 }
             })
 
-            let serviceDetail = {
-                // id: this.updatedId,
-                // Services_id: serviceId,
-                // PetTypes_id: petTypeId,
-                // PetSizes_id: petSizeId,
-                // price: this.form.price,
-                // updatedBy: this.$store.getters.loggedInEmployee
+            let pet = {
+                id: this.updatedId,
+                Customers_id: customerId,
+                PetTypes_id: petTypeId,
+                PetSizes_id: petSizeId,
+                name: this.form.name,
+                dateBirth: this.form.dateBirth,
+                updatedBy: this.$store.getters.loggedInEmployee
             }
 
-            var uri = this.$apiUrl + 'servicedetails/update' 
+            var uri = this.$apiUrl + 'pets/update' 
             this.load = true 
-            this.$http.put(uri, this.$qs.stringify(serviceDetail), {headers: {
+            this.$http.put(uri, this.$qs.stringify(pet), {headers: {
             'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
             }}).then(response =>{
             this.snackbar = true; //mengaktifkan snackbar 
@@ -411,10 +413,11 @@ export default {
             this.typeInput = 'edit'; 
             this.dialog = true; 
 
-            this.form.service = this.getServiceFromId(item.serviceId)
+            this.form.customer = this.getCustomerFromId(item.customerId)
             this.form.petType = this.getPetTypeFromId(item.petTypeId)
             this.form.petSize = this.getPetSizeFromId(item.petSizeId)
-            this.form.price = item.price
+            this.form.name = item.name
+            this.form.dateBirth = item.dateBirth
 
             this.updatedId = item.id 
         }, 
@@ -447,15 +450,15 @@ export default {
         resetForm(){ 
             this.$refs.form.reset()
         },
-        getServiceFromId(id) {
+        getCustomerFromId(id) {
             let start = 0
-            let end = this.services.length-1
+            let end = this.customers.length-1
 
             while(start <= end) {
                 let mid = Math.floor((start + end)/2)
-                if(this.services[mid].id === id) {
-                    return this.services[mid].service
-                }else if(this.services[mid].id < id) {
+                if(this.customers[mid].id === id) {
+                    return this.customers[mid].customer
+                }else if(this.customers[mid].id < id) {
                     start = mid + 1;
                 } else {
                     end = mid - 1;
