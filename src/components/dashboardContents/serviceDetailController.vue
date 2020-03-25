@@ -2,7 +2,7 @@
     <v-container> 
         <v-card>
             <v-container grid-list-md mb-0>
-                <h2 class="text-md-center">Data Detil Layanan</h2> 
+                <h2 class="text-md-center">Data Detail Layanan</h2> 
                 <v-layout row wrap style="margin:10px"> 
                     <v-flex xs6> 
                         <v-btn
@@ -14,7 +14,7 @@
                         @click="dialog = true"
                         >
                         <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
-                            Tambah Layanan
+                            Tambah Detail Layanan
                         </v-btn>
                     </v-flex>
                     <v-flex xs6 class="text-right"> 
