@@ -1,7 +1,7 @@
 import Vue from 'vue' 
 import Router from 'vue-router'
 import store from '../store'
- 
+
 const DashboardLayout = () => import( '../components/dashboardLayout.vue') 
  
 function loadView(view) { 
@@ -106,7 +106,8 @@ const routes = [
             }
         ],     
     },   
-]  
+]
+
 Vue.use(Router) 
                
 const router = new Router({mode: 'history', routes: routes}) 
@@ -120,9 +121,6 @@ router.beforeEach((to, from, next) => {
             console.log()
             return
         }
-
-        next('/')
-        return
       }
       next('/login') 
     } else {

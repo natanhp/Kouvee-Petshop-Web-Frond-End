@@ -9,7 +9,7 @@ import qs from 'qs'
 Vue.prototype.$http = Axios;
 Vue.prototype.$qs = qs
 Vue.prototype.$store = store;
-Vue.prototype.$apiUrl = 'http://192.168.100.2:8000/api/v1/';
+Vue.prototype.$apiUrl = 'http://localhost:8000/api/v1/'
 const token = localStorage.getItem('token')
 if (token) {
   Vue.prototype.$http.defaults.headers.common['Authorization'] = "Bearer " + token

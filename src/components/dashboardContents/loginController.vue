@@ -31,17 +31,12 @@
                                             </v-card-text>
                                             
                                     </v-col>
-                                     
-                                   
-                                   
                                     <v-col cols="12" md="8\4" class="teal accent-3">
                                                 <v-card-text class="white-text mt-12">
                                                     <h1 class="text-center display-1">Hello, Gaes!!</h1>
                                                     <h5 class="text-center">Enjoy With Us!</h5>
                                                 </v-card-text>
                                     </v-col>
-                                  
-                                    
                                 </v-row>
 
                             </v-window-item>
@@ -81,8 +76,15 @@ export default {
             let username = this.form.username 
             let password = this.form.password
             this.$store.dispatch('login', { username, password })
-            .then(() => console.log("Sukses"))
+            this.user = new FormData()
+            this.user.append("username", this.form.username)
+            this.user.append("password", this.form.password)
+            this.$http.post(this.$apiUrl + 'login',this.user)
+            .then(response => {
+                console.log(response)
+            })
             .catch(err => console.log(err))
+            let role = this.$store.getters.employeeRole
         },
     },
 }
