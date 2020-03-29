@@ -1,4 +1,4 @@
-# kouvee
+# kouvee mencoba finishing
 
 ## Project setup
 ```
