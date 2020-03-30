@@ -9,8 +9,19 @@
             </v-list-item>
             
             <v-divider></v-divider>
-            <v-list>
-                <v-list-item v-for="item in items" :key="item.title" link>
+            <v-list v-if="this.$store.getters.employeeRole === 'Owner'">
+                <v-list-item v-for="item in itemOwners" :key="item.title" link>
+                    <v-list-item-icon>
+                        <v-icon>{{ item.icon }}</v-icon>
+                    </v-list-item-icon>
+
+                    <v-list-item-content>
+                        <v-list-item-title><v-btn text router v-bind:to="item.route">{{item.title}}</v-btn></v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+            </v-list>
+            <v-list v-if="this.$store.getters.employeeRole === 'CS'">
+                <v-list-item v-for="item in itemCSs" :key="item.title" link>
                     <v-list-item-icon>
                         <v-icon>{{ item.icon }}</v-icon>
                     </v-list-item-icon>
@@ -47,53 +58,55 @@ export default {
     data(){
         return {
             drawer: null,
-            items: [
+            itemOwners: [
                 { 
-                    title: 'Data Pegawai (Owner)', 
+                    title: 'Data Pegawai', 
                     icon: 'mdi-human-male',
-                    route: '/employee'
+                    route: '/employee',
                 },
                 {
-                    title: 'Data Ukuran Hewan (Owner)',
+                    title: 'Data Ukuran Hewan',
                     icon: 'mdi-dog-side',
                     route: '/petsize'
                 },
                 {
-                    title: 'Data Tipe Hewan (Owner)',
+                    title: 'Data Tipe Hewan',
                     icon: 'mdi-dog-side',
                     route: '/pettype'
                 },
                 {
-                    title: 'Data Produk (Owner)',
+                    title: 'Data Produk',
                     icon: 'mdi-package-variant',
                     route: '/product'
                 },
                 {
-                    title: 'Data Layanan (Owner)',
+                    title: 'Data Layanan',
                     icon:'mdi-pot',
                     route: '/service'
                 },
                 {
-                    title: 'Data Pemasok (Owner)',
+                    title: 'Data Pemasok',
                     icon: 'mdi-truck-fast',
                     route: '/supplier'
                 },
                 {
-                    title: 'Detail Layanan (Owner)',
+                    title: 'Detail Layanan',
                     icon: 'mdi-book-open',
                     route: '/servicedetail'
                 },
+            ],
+            itemCSs: [
                 {
-                    title: 'Data Hewan (CS)',
+                    title: 'Data Hewan',
                     icon: 'mdi-dog',
                     route: '/pet'
                 },
                 {
-                    title: 'Data Pelanggan (CS)',
+                    title: 'Data Pelanggan',
                     icon: 'mdi-human',
                     route: '/customer'
                 },
-            ],
+            ]
         }
     },
     methods:{

@@ -78,19 +78,19 @@
                     <v-container> 
                         <v-row> 
                             <v-col cols="12"> 
-                                <v-text-field label="*Nama Produk" v-model="form.productName" required></v-text-field>
+                                <v-text-field label="*Nama Produk" v-model="form.productName" :rules="[() => !!form.productName || 'Nama Produk tidak boleh kosong']" required></v-text-field>
                             </v-col>
                             <v-col cols="12"> 
-                                <v-text-field label="*Jumlah Produk" v-model="form.productQuantity" required></v-text-field>
+                                <v-text-field label="*Jumlah Produk" v-model="form.productQuantity" :rules="[() => !!form.productQuantity.match(/^[0-9]*$/) && !!form.productQuantity || 'Jumlah Produk tidak boleh kosong']" required></v-text-field>
                             </v-col> 
                             <v-col cols="12"> 
-                                <v-text-field label="*Harga Produk" v-model="form.productPrice" required></v-text-field>
+                                <v-text-field label="*Harga Produk" v-model="form.productPrice" :rules="[() => !!form.productPrice.match(/^[0-9]*$/) && !!form.productPrice || 'Harga Produk tidak boleh kosong']" required></v-text-field>
                             </v-col>
                             <v-col cols="12"> 
-                                <v-text-field label="*Satuan Produk" v-model="form.meassurement" required></v-text-field>
+                                <v-text-field label="*Satuan Produk" v-model="form.meassurement" :rules="[() => !!form.meassurement || 'Satuan Produk tidak boleh kosong']" required></v-text-field>
                             </v-col>
                             <v-col cols="12"> 
-                                <v-text-field label="*Jumlah Minimal" v-model="form.minimumQty" required></v-text-field>
+                                <v-text-field label="*Jumlah Minimal" v-model="form.minimumQty" :rules="[() => !!form.minimumQty.match(/^[0-9]*$/) && !!form.minimumQty || 'Jumlah Minimal tidak boleh kosong']" required></v-text-field>
                             </v-col>
                             <v-col cols="12"> 
                                 <v-file-input

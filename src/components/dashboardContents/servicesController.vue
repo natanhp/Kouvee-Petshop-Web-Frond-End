@@ -75,7 +75,7 @@
                         <v-container> 
                         <v-row> 
                             <v-col cols="12"> 
-                                <v-text-field label="Nama Layanan*" v-model="form.serviceName" required></v-text-field> 
+                                <v-text-field label="Nama Layanan*" v-model="form.serviceName" :rules="[() => !!form.serviceName || 'Nama Layanan tidak boleh kosong']" required></v-text-field> 
                             </v-col> 
                         </v-row> 
                         </v-container>

@@ -76,16 +76,16 @@
                         <v-container> 
                         <v-row> 
                             <v-col cols="12"> 
-                                <v-select class="my-2" :items="services" label="Layanan*" item-text="service" v-model="form.service" required></v-select>
+                                <v-select class="my-2" :items="services" label="Layanan*" item-text="service" v-model="form.service" :rules="[() => !!form.service || 'Layanan tidak boleh kosong']" required></v-select>
                             </v-col> 
                             <v-col cols="12"> 
-                                <v-select class="my-2" :items="petTypes" label="Tipe*" item-text="type" v-model="form.petType" required></v-select>
+                                <v-select class="my-2" :items="petTypes" label="Tipe*" item-text="type" v-model="form.petType" :rules="[() => !!form.petType || 'Tipe Hewan tidak boleh kosong']" required></v-select>
                             </v-col> 
                             <v-col cols="12"> 
-                                <v-select class="my-2" :items="petSizes" label="Ukuran*" item-text="size" v-model="form.petSize" required></v-select>
+                                <v-select class="my-2" :items="petSizes" label="Ukuran*" item-text="size" v-model="form.petSize" :rules="[() => !!form.size || 'Ukuran tidak boleh kosong']" required></v-select>
                             </v-col> 
                             <v-col cols="12"> 
-                                <v-text-field label="*Harga Layanan" v-model="form.price" required></v-text-field>
+                                <v-text-field label="*Harga Layanan" v-model="form.price" :rules="[() => !!form.price.match(/^[0-9]*$/) && !!form.price || 'Harga tidak boleh kosong']" required></v-text-field>
                             </v-col>
                         </v-row> 
                         </v-container>

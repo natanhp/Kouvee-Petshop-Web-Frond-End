@@ -20,7 +20,7 @@ const routes = [
                 meta: { 
                     requiresAuth: true,
                     role: "Owner"
-                }        
+                }
             },
             {
                 name: 'petsizesController',           
