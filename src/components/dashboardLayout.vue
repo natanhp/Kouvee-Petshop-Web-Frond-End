@@ -1,9 +1,10 @@
 <template>
     <div>
-        <v-navigation-drawer v-if="this.$store.getters.isLoggedIn" v-model = "drawer" class = "grey darken-3" white app clipped fixed temporary>
+        <v-navigation-drawer v-if="this.$store.getters.isLoggedIn" v-model = "drawer" class = "grey darken-5" white app clipped fixed temporary>
             <v-list-item>
                 <v-list-item-content>
-                    <v-list-item-title class="title">MENU</v-list-item-title>
+                    <v-list-item-title v-if="this.$store.getters.employeeRole === 'Owner'" class="title">MENU OWNER</v-list-item-title>
+                    <v-list-item-title v-if="this.$store.getters.employeeRole === 'CS'" class="title">MENU CS</v-list-item-title>
                     <!-- <v-list-item-subtitle>Vue Consume REST API</v-list-item-subtitle> -->
                 </v-list-item-content>
             </v-list-item>
@@ -38,7 +39,7 @@
             </template>
         </v-navigation-drawer>
 
-        <v-app-bar white app fixed clipped-left height="70px" color="grey darken-3">
+        <v-app-bar v-if="this.$store.getters.isLoggedIn" white app fixed clipped-left height="70px" color="grey darken-4">
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
             <VSpacer />

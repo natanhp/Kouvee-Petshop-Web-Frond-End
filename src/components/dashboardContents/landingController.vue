@@ -1,60 +1,139 @@
 <template>
-  <section
-    id="welcome"
-    class="hide-overflow"
-  >
-    <v-layout>
-      <v-flex
-        hidden-sm-and-down
-        md6
-      >
-        <v-img
-          src="https://cdn.pixabay.com/photo/2016/07/15/15/55/dachshund-1519374_1280.jpg"
-          height="100vh"
-        />
-      </v-flex>
+  <div id="app">
 
-      <v-flex
-        xs12
-        md6
-        align-content-space-between
-        layout
-        :pa-5="$vuetify.breakpoint.smAndDown"
-        wrap
-      >
-        <base-bubble-1
-          style="transform: rotate(360deg) translateY(200%)"
-        />
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="#page-top">Kouvee Petshop</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          Menu
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav text-uppercase ml-auto">
+            <li class="nav-item">
+              <v-btn href="#services">Layanan</v-btn>
+            </li>
+            <li class="nav-item">
+              <v-btn href="#team ">Tentang</v-btn>
+            </li>
+            <li class="nav-item">
+              <v-btn router to="/login">LOGIN</v-btn>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
 
-        <v-layout
-          align-center
-          justify-center
-        >
-          <v-flex
-            xs10
-            md6
-            class="mt-10"
-          >
-           <img src = "https://pngimage.net/wp-content/uploads/2018/05/anjing-kartun-png-1.png" style="height:180px;width:100px">
-           
-            <v-toolbar-title><h1>KOUVEE PETSHOP</h1></v-toolbar-title>
-            <br>
-            <base-text>
-            <p style="text-align:justify">
-               Kouvee's Petshop adalah toko yang menyediakan kebutuhan hewan kesayangan Anda!!......
-            </p>
-            </base-text>
-            
-            <base-btn class="mt-8" style="button-align:center">
-                <v-btn rounded color=#808000 dark router to="/login">LOGIN</v-btn>
-            </base-btn>
-          </v-flex>
-        </v-layout>
+    <!-- Header -->
+    <header class="masthead">
+      <div class="container">
+        <div class="intro-text">
+          <div class="intro-lead-in">Selamat Datang Di Kouvee Petshop!</div>
+          <div class="intro-heading text-uppercase">Senang Bertemu Dengan Anda</div>
+          <!-- <a class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" href="#services">Tell Me More</a> -->
+        </div>
+      </div>
+    </header>
 
-        <base-bubble-2
-          style="transform: rotate(360deg) translate(-500px, -15%)"
-        />
-      </v-flex>
-    </v-layout>
-  </section>
+    <!-- Services -->
+    <section id="services">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 text-center">
+            <h2 class="section-heading text-uppercase">Layanan</h2>
+            <h3 class="section-subheading text-muted">Semua yang ada disini terbuka bagi Anda</h3>
+          </div>
+        </div>
+        Psssttt... Coming SOON
+        <!-- <div class="row text-center">
+          <div class="col-md-4">
+            <span class="fa-stack fa-4x">
+              <i class="fas fa-circle fa-stack-2x text-primary"></i>
+              <i class="fas fa-shopping-cart fa-stack-1x fa-inverse"></i>
+            </span>
+            <h4 class="service-heading">E-Commerce</h4>
+            <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
+          </div>
+          <div class="col-md-4">
+            <span class="fa-stack fa-4x">
+              <i class="fas fa-circle fa-stack-2x text-primary"></i>
+              <i class="fas fa-laptop fa-stack-1x fa-inverse"></i>
+            </span>
+            <h4 class="service-heading">Responsive Design</h4>
+            <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
+          </div>
+          <div class="col-md-4">
+            <span class="fa-stack fa-4x">
+              <i class="fas fa-circle fa-stack-2x text-primary"></i>
+              <i class="fas fa-lock fa-stack-1x fa-inverse"></i>
+            </span>
+            <h4 class="service-heading">Web Security</h4>
+            <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
+          </div>
+        </div> -->
+      </div>
+    </section>
+
+    <!-- Team -->
+    <section class="bg-light" id="team">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 text-center">
+            <h2 class="section-heading text-uppercase">Kelompok 2 P3L Kelas J</h2>
+            <!-- <h3 class="section-subheading text-muted"></h3> -->
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="team-member">
+              <img class="mx-auto rounded-circle" src="img/team/1.jpg">
+              <h4>Natan HP</h4>
+              <p class="text-muted">Scrum Master</p>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="team-member">
+              <img class="mx-auto rounded-circle" src="img/team/2.jpg">
+              <h4>Larry</h4>
+              <p class="text-muted">Apprentice</p>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="team-member">
+              <img class="mx-auto rounded-circle" src="img/team/3.jpg">
+              <h4>Arum Puspa Belindo</h4>
+              <p class="text-muted">Apprentice</p>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="team-member">
+              <img class="mx-auto rounded-circle" src="img/team/4.jpg">
+              <h4>Nobel Husodo</h4>
+              <p class="text-muted">Apprentice</p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-8 mx-auto text-center">
+            <p class="large text-muted">Sesuatu yang berat di mulai dari pikiran diri sendiri</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 </template>
+
+<style>
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+
+body {
+  background: white;  
+}
+</style>

@@ -1,4 +1,5 @@
 <template> 
+<div class="body">
     <v-container> 
         <v-card>
             <v-container grid-list-md mb-0>
@@ -185,8 +186,9 @@
         </v-menu>
         </div> -->
 
-    </v-container> 
-</template> 
+    </v-container>
+</div>
+</template>
 
 <script> 
 export default { 
