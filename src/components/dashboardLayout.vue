@@ -98,14 +98,14 @@ export default {
             ],
             itemCSs: [
                 {
-                    title: 'Data Hewan',
-                    icon: 'mdi-dog',
-                    route: '/pet'
-                },
-                {
                     title: 'Data Pelanggan',
                     icon: 'mdi-human',
                     route: '/customer'
+                },
+                {
+                    title: 'Data Hewan',
+                    icon: 'mdi-dog',
+                    route: '/pet'
                 },
             ]
         }

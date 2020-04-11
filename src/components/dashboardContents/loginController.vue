@@ -10,7 +10,7 @@
                                 <v-col>                                    
                                     <div class="form">                               
                                         <v-text-field 
-                                            v-model="form.username" label="Email" type="text" color="black" prepend-icon="email" outlined height=50>
+                                            v-model="form.username" label="Username" type="text" color="black" prepend-icon="email" outlined height=50>
                                         </v-text-field>
                                         <v-text-field 
                                             v-model="form.password" label="Password" type="password" color="black" prepend-icon="lock" outlined height=50>
