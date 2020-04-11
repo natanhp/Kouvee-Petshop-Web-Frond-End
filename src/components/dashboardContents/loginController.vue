@@ -6,7 +6,7 @@
                 <v-col cols="12" sm="8" md="8">
                     <v-card class="elevation-12">
                             <v-card-text class="mt-12">
-                                <base-heading><h1 class="text-center display-3">Login Kouvee</h1></base-heading>
+                                <h1 class="text-center display-3">Login Kouvee</h1>
                                 <v-col>                                    
                                     <div class="form">                               
                                         <v-text-field 
@@ -47,23 +47,15 @@ export default {
     methods :
     {
         loginUser(){
-            // this.user = new FormData()
-            // this.user.append("username", this.form.username)
-            // this.user.append("password", this.form.password)
-            // this.$http.post(this.$apiUrl + 'login',this.user).then(response => {
-            //     console.log(response)
-            // })  
             let username = this.form.username 
             let password = this.form.password
-            this.$store.dispatch('login', { username, password })
-            this.user = new FormData()
-            this.user.append("username", this.form.username)
-            this.user.append("password", this.form.password)
-            this.$http.post(this.$apiUrl + 'login',this.user)
-            .then(response => {
-                console.log(response)
+            this.$store.dispatch('login', { username, password }).then(response => {
+                if(response.data.data.role==="Owner") {
+                    this.$router.push('/employee')
+                } else if(response.data.data.role==="CS") {
+                    this.$router.push('/customer')
+                }
             })
-            .catch(err => console.log(err))
             let role = this.$store.getters.employeeRole
         },
     },
