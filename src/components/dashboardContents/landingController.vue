@@ -14,7 +14,7 @@
               <v-btn text large color="white" href="#services">Pelayanan</v-btn>
             </li>
             <li class="nav-item">
-              <v-btn text large color="white" href="#team ">Tentang</v-btn>
+              <v-btn text large color="white" href="#team">Tentang</v-btn>
             </li>
             <li class="nav-item">
               <v-btn text large color="white" router to="/login">LOGIN</v-btn>
@@ -30,7 +30,6 @@
         <div class="intro-text">
           <div class="intro-lead-in">Selamat Datang Di Kouvee Petshop!</div>
           <div class="intro-heading text-uppercase" aria-activedescendant="">Berikan Yang Terbaik Untuk Hewan Kesayangan Anda</div>
-          <!-- <a class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" href="#services">Tell Me More</a> -->
         </div>
       </div>
     </header>
@@ -93,32 +92,6 @@
             </v-row>
           </v-container>
         </div>
-        <!-- <div class="row text-center">
-          <div class="col-md-4">
-            <span class="fa-stack fa-4x">
-              <i class="fas fa-circle fa-stack-2x text-primary"></i>
-              <i class="fas fa-shopping-cart fa-stack-1x fa-inverse"></i>
-            </span>
-            <h4 class="service-heading">E-Commerce</h4>
-            <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-          </div>
-          <div class="col-md-4">
-            <span class="fa-stack fa-4x">
-              <i class="fas fa-circle fa-stack-2x text-primary"></i>
-              <i class="fas fa-laptop fa-stack-1x fa-inverse"></i>
-            </span>
-            <h4 class="service-heading">Responsive Design</h4>
-            <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-          </div>
-          <div class="col-md-4">
-            <span class="fa-stack fa-4x">
-              <i class="fas fa-circle fa-stack-2x text-primary"></i>
-              <i class="fas fa-lock fa-stack-1x fa-inverse"></i>
-            </span>
-            <h4 class="service-heading">Web Security</h4>
-            <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-          </div>
-        </div> -->
       </div>
     </section>
 
@@ -128,34 +101,33 @@
         <div class="row">
           <div class="col-lg-12 text-center">
             <h2 class="section-heading text-uppercase">Kelompok 2 P3L Kelas J</h2>
-            <!-- <h3 class="section-subheading text-muted"></h3> -->
           </div>
         </div>
         <div class="row">
           <div class="col-sm-4">
             <div class="team-member">
-              <img class="mx-auto rounded-circle" src="img/team/1.jpg">
+              <img class="mx-auto rounded-circle" src="../../assets/img/team/1.jpg">
               <h4>Natan HP</h4>
               <p class="text-muted">Scrum Master</p>
             </div>
           </div>
           <div class="col-sm-4">
             <div class="team-member">
-              <img class="mx-auto rounded-circle" src="img/team/2.jpg">
+              <img class="mx-auto rounded-circle" src="../../assets/img/team/2.jpg">
               <h4>Larry</h4>
               <p class="text-muted">Apprentice</p>
             </div>
           </div>
           <div class="col-sm-4">
             <div class="team-member">
-              <img class="mx-auto rounded-circle" src="img/team/3.jpg">
+              <img class="mx-auto rounded-circle" src="../../assets/img/team/3.jpg">
               <h4>Arum Puspa Belindo</h4>
               <p class="text-muted">Apprentice</p>
             </div>
           </div>
           <div class="col-sm-4">
             <div class="team-member">
-              <img class="mx-auto rounded-circle" src="img/team/4.jpg">
+              <img class="mx-auto rounded-circle" src="../../assets/img/team/4.jpg">
               <h4>Nobel Husodo</h4>
               <p class="text-muted">Apprentice</p>
             </div>
@@ -182,6 +154,10 @@
 
 body {
   background: white;  
+}
+
+#mainNav {
+  background-color: black;
 }
 </style>
 
@@ -256,49 +232,10 @@ export default {
                 }); 
             }) 
         },
-        getServices() {
-                var uri = this.$apiUrl + 'services/getall'
-                this.$http.get(uri).then(response =>{
-                    this.services = [] 
-                    response.data.data.forEach(element => {
-                        this.services.push({
-                            id: element.id,
-                            service: element.serviceName
-                        })
-                    }) 
-                }) 
-        },
-        getPetSizes() {
-                var uri = this.$apiUrl + 'uni/petsizes/getall'
-                this.$http.get(uri).then(response =>{
-                    this.petSizes = [] 
-                    response.data.data.forEach(element => {
-                        this.petSizes.push({
-                            id: element.id,
-                            size: element.size
-                        })
-                    }) 
-                }) 
-        },
-        getPetTypes() {
-                var uri = this.$apiUrl + 'uni/pettypes/getall'
-                this.$http.get(uri).then(response =>{
-                    this.petTypes = []  
-                    response.data.data.forEach(element => {
-                        this.petTypes.push({
-                            id: element.id,
-                            type: element.type
-                        })
-                    }) 
-                }) 
-        },
   }, 
   mounted(){ 
       this.getData();
       this.getDataService();
-      this.getServices()
-      this.getPetTypes()
-      this.getPetSizes()
   },
 }
 </script>
