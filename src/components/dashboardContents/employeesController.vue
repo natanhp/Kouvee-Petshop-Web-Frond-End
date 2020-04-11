@@ -1,4 +1,5 @@
 <template> 
+<div class="body">
     <v-container> 
         <v-card>
             <v-container grid-list-md mb-0>
@@ -86,7 +87,7 @@
                             </v-col> 
 
                             <v-col cols="12">
-                                <v-text-field label="Alamat*" v-model="form.address" :rules="[() => !!form.address || 'Nama tidak boleh kosong']" required></v-text-field>
+                                <v-text-field label="Alamat*" v-model="form.address" :rules="[() => !!form.address || 'Alamat tidak boleh kosong']" required></v-text-field>
                             </v-col>     
 
                             <v-col cols="12"> 
@@ -185,8 +186,9 @@
         </v-menu>
         </div> -->
 
-    </v-container> 
-</template> 
+    </v-container>
+</div>
+</template>
 
 <script> 
 export default { 

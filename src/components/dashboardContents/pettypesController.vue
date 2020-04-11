@@ -73,7 +73,7 @@
                      <v-container> 
                         <v-row> 
                             <v-col cols="12"> 
-                                <v-text-field label="Tipe*" v-model="form.type" required></v-text-field> 
+                                <v-text-field label="Tipe*" v-model="form.type" :rules="[() => !!form.type || 'Tipe tidak boleh kosong']" required></v-text-field> 
                             </v-col> 
 
                           

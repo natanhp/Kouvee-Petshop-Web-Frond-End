@@ -72,10 +72,9 @@
                     <v-container> 
                         <v-row> 
                             <v-col cols="12"> 
-                                <v-overflow-btn class="my-2" :items="dropdown_font" label="Ukuran*" v-model="form.size"></v-overflow-btn>
+                                <v-overflow-btn class="my-2" :items="dropdown_font" label="Ukuran*" v-model="form.size"
+                                :rules="[() => !!form.size || 'Ukuran tidak boleh kosong']" required></v-overflow-btn>
                             </v-col> 
-
-                          
                         </v-row> 
                     </v-container>
                     <small>*Diharuskan untuk mengisi data</small> 

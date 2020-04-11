@@ -5,11 +5,13 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 import qs from 'qs'
+import './assets/css/styles.css'
+import './assets/css/bootstrap.css'
 
 Vue.prototype.$http = Axios;
 Vue.prototype.$qs = qs
 Vue.prototype.$store = store;
-Vue.prototype.$apiUrl = 'http://192.168.100.2:8000/api/v1/';
+Vue.prototype.$apiUrl = 'http://localhost:8000/api/v1/'
 const token = localStorage.getItem('token')
 if (token) {
   Vue.prototype.$http.defaults.headers.common['Authorization'] = "Bearer " + token
