@@ -57,7 +57,7 @@
                 <v-card>
                   <v-list-item three-line>
                    <v-list-item-content>
-                      <div class="overline mb-4"><v-img :src="item.img_url" max-width="200px" max-height="500px"></v-img></div>
+                      <div class="overline mb-4"><v-img class="img" :src="item.img_url" max-width="200px" max-height="500px"></v-img></div>
                       <v-list-item-title class="headline mb-1">{{item.product.productName}}</v-list-item-title> 
                       <v-list-item-subtitle>Jumlah: {{item.product.productQuantity}}</v-list-item-subtitle>
                       <v-list-item-subtitle>Harga: {{item.product.productPrice}}</v-list-item-subtitle>
@@ -158,6 +158,12 @@ body {
 
 #mainNav {
   background-color: black;
+}
+
+.img{
+  height: 200px;
+  object-fit: cover;
+  object-position: center;
 }
 </style>
 
