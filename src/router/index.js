@@ -87,6 +87,15 @@ const routes = [
                 } 
             },
             {
+                name: 'restockController',
+                path: '/restock',
+                component: loadView('restockController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "Owner"
+                } 
+            },
+            {
                 name: 'customerController',
                 path: '/customer',
                 component: loadView('customerController'),

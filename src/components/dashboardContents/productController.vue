@@ -308,7 +308,6 @@ export default {
             if(this.form.image != undefined) {
                 this.product.append('image', this.form.image);
             }
-
             var uri = this.$apiUrl + 'products/update' 
             this.load = true 
             this.$http.post(uri,this.product).then(response =>{

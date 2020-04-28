@@ -107,20 +107,16 @@
                 <v-card-text> 
                      <v-form ref="form">
                         <v-container> 
-                        <v-row> 
-                           
-                               
+                        <v-row>   
                             <v-col cols="12"> 
                                 <v-text-field label="Nama*" v-model="form.name" :rules="[() => !!form.name || 'Nama tidak boleh kosong']" required></v-text-field> 
                             </v-col> 
-
                             <v-col cols="12">
                                 <v-text-field label="Alamat*" v-model="form.address" :rules="[() => !!form.address || 'Alamat tidak boleh kosong']" required></v-text-field>
                             </v-col>     
                             <v-col cols="12"> 
                                 <v-text-field label="Nomor Telepon*" v-model="form.phoneNumber" :rules="[() => !!form.phoneNumber.match(/^[0-9]*$/) && !!form.phoneNumber || 'Nomor telepon harus angka dan tidak boleh kosong']" required></v-text-field> 
                             </v-col> 
-                            
                         </v-row> 
                         </v-container>
                     </v-form>
