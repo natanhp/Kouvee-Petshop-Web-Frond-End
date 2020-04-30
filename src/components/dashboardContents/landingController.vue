@@ -43,8 +43,8 @@
             <h3 class="section-subheading text-muted">Semua yang ada disini terbuka bagi Anda</h3>
           </div>  
         </div>
+        <!-- Tampilan Produk -->
         <div>
-          <!-- Tampilan Produk -->
           <v-container>
             <v-toolbar flat color="white">
               <v-toolbar-title>Produk</v-toolbar-title>
@@ -69,8 +69,8 @@
             </v-row>
           </v-container>
         </div>
+        <!-- Tampilan Layanan -->
         <div>
-          <!-- Tampilan Layanan -->
           <v-container>
             <v-toolbar flat color="white">
               <v-toolbar-title>Layanan</v-toolbar-title>

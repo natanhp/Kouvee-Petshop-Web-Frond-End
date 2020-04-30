@@ -19,7 +19,6 @@
                                     ></v-text-field>
                                 </v-flex> 
                             </v-layout> 
-                        
                             <v-data-table 
                                 :headers="headers" 
                                 :items="data" 
@@ -51,7 +50,7 @@
                         </v-container> 
                     </v-card>
                     <v-dialog v-model="dialog" persistent max-width="600px"> 
-                        <v-card> 
+                        <v-card flat> 
                             <v-card-title> 
                                 <span class="headline">Pilih Jumlah Produk</span> 
                             </v-card-title> 
@@ -75,6 +74,7 @@
                     </v-dialog>
                     <!-- Button -->
                     <v-btn color="primary" @click="e6 = 2">Continue</v-btn>
+                    <v-btn text @click="e6=3">Konfirmasi</v-btn>
                 </v-stepper-content>
 
 
@@ -151,9 +151,33 @@
 
                 <v-stepper-step :complete="e6 > 3" step="3">Konfirmasi</v-stepper-step>
                 <v-stepper-content step="3">
-                    <v-card color="grey lighten-1" class="mb-12" height="200px"></v-card>
+                    <div>
+                        <v-container>
+                            <v-toolbar flat color="white">
+                            <v-toolbar-title>Detail Restock Produk</v-toolbar-title>
+                            </v-toolbar>
+                            <v-row>
+                            <v-flex cols="3" v-for="(item,index) in details" :key="index">
+                                <v-card class="text-xs-center ma-3">
+                                    <v-list-item>
+                                        <v-list-item-content>
+                                            <v-list-item-title class="text-center headline mb-1">{{item.id}}</v-list-item-title>
+                                            <v-list-item-subtitle class="text-center">Nama Supplier: {{item.supplier_name}}</v-list-item-subtitle>
+                                        </v-list-item-content>
+                                    </v-list-item>
+                                    <v-flex cols="3" v-for="(temp,index) in item.productRestockDetails" :key="index">
+                                        <v-list-item-content>
+                                            <v-list-item-subtitle class="text-center">Nama: {{temp.product_name}}</v-list-item-subtitle>
+                                            <v-list-item-subtitle class="text-center">Jumlah: {{temp.itemQty}}</v-list-item-subtitle>
+                                        </v-list-item-content>
+                                    </v-flex>
+                                    <v-btn color="blue darken-1" text @click="setConfirm(item.id)">Konfirm</v-btn> 
+                                </v-card>
+                            </v-flex>
+                            </v-row>
+                        </v-container>
+                    </div>
                     <v-btn color="primary" @click="e6 = 1">Continue</v-btn>
-                    <v-btn text @click="e6=2">Cancel</v-btn>
                 </v-stepper-content>
             </v-stepper>
         </v-app>
@@ -169,6 +193,7 @@ export default {
             dialogTab: false,
             dialogSup: false,
             keyword: '',
+            keyRes: '',
             headers: [ 
                 { 
                     text: 'No', 
@@ -227,6 +252,8 @@ export default {
             }],
             productRestockDetails: [],
             suppliers: [],
+            details: [],
+            res: [],
             snackbar: false, 
             color: null, 
             text: '', 
@@ -244,128 +271,173 @@ export default {
                 id : '',
                 index : '',
                 sup : '',
+                id_res : '',
             },
             product : {},
             supplier : {},
             createdBy : {},
             isArrived : {},
             suppliers_id : {},
+            get_in : {},
             typeInput: 'new', 
             errors : '', 
             updatedId : '',
         } 
     },
-   methods:{ 
-        getDataProduk(){ 
-            var uri = this.$apiUrl + 'noa/products/getall'
-            this.$http.get(uri).then(response =>{ 
-                this.data = []
-                response.data.data.forEach(element => {
-                   this.data.push({
-                       product: element.product,
-                       img_url: element.image_url
-                   }) 
-                });
-            })
-        },
-        getSupplier() {
-            var uri = this.$apiUrl + 'suppliers/getall'
-            this.$http.get(uri).then(response =>{
-                this.suppliers = [] 
-                response.data.data.forEach(element => {
-                    this.suppliers.push({
-                        id: element.idSupplier,
-                        supplier: element.name  
-                    })
+    methods:{ 
+            getDataProduk(){ 
+                var uri = this.$apiUrl + 'noa/products/getall'
+                this.$http.get(uri).then(response =>{ 
+                    this.data = []
+                    response.data.data.forEach(element => {
+                        this.data.push({
+                            product: element.product,
+                            img_url: element.image_url
+                        }) 
+                    });
+                })
+            },
+            getSupplier() {
+                var uri = this.$apiUrl + 'suppliers/getall'
+                this.$http.get(uri).then(response =>{
+                    this.suppliers = [] 
+                    response.data.data.forEach(element => {
+                        this.suppliers.push({
+                            id: element.idSupplier,
+                            supplier: element.name  
+                        })
+                    }) 
                 }) 
-            }) 
-        },
-        editHandler(item){ 
-            console.log(this.supplier)
-            this.typeInput = 'edit'; 
-            this.dialog = true; 
-            this.form.productName = item.product.productName;
-            this.form.productQuantity = '';
-            this.form.productPrice = item.product.productPrice;
-            this.form.meassurement = item.product.meassurement;
-            this.form.minimumQty = item.product.minimumQty;  
-            this.updatedId = item.product.id 
-        },
-        editTabel(item,index){
-            console.log(item)
-            this.typeInput = 'editTabel';
-            this.dialogTab = true;
-            this.formTabel.qty = item.itemQty;
-            this.formTabel.id = item.id ;
-            this.formTabel.index = index;
-        },
-        deleteTabel(index){
-            this.productRestockDetails.splice(index,1)
-        },
-        setEditTabel(){
-            let edit = {
-                itemQty: this.formTabel.qty
-            }
-            Object.assign(this.productRestockDetails[this.formTabel.index], edit)
-            this.closeForm();
-        },
-        setTabel(){
-            let i = 0;
-            let restock = {
-                created: this.$store.getters.loggedInEmployee,
-                id: this.updatedId,
-                name: this.form.productName,
-                qty: this.form.productQuantity,
-                meassurement: this.form.meassurement
-            }
-            for(i=0;i<this.temp.length;i++){
-			    this.productRestockDetails.push({
-                'createdBy': restock.created,
-                'Products_id': restock.id, 
-                'name': restock.name, 
-                'itemQty': restock.qty, 
-                'meassurement': restock.meassurement})
-            }
-            console.log(this.productRestockDetails)
-            this.closeForm()
-        },
-        setFinal(){
-            this.suppliers.forEach(element => {
-                if(element.supplier === this.formTabel.sup) {
-                    this.suppliers_id = element.id
+            },
+            getDataRestock(){
+                var uri = this.$apiUrl + 'productrestock/getall'
+                this.$http.get(uri).then(response =>{
+                    this.details = response.data.data
+                })
+            },
+            setConfirm(id){
+                var uri = this.$apiUrl + 'productrestock/confirm/' + id + '/' + this.$store.getters.loggedInEmployee
+                this.$http.get(uri).then(response =>{ 
+                    this.snackbar = true; 
+                    this.text = response.data.message; 
+                    this.color = 'green' 
+                    this.deleteDialog = false; 
+                }).catch(error =>{ 
+                    this.errors = error 
+                    this.snackbar = true; 
+                    this.text = 'Try Again'; 
+                    this.color = 'red'; 
+                }) 
+            },
+            editHandler(item){ 
+                console.log(this.supplier)
+                this.typeInput = 'edit'; 
+                this.dialog = true; 
+                this.form.productName = item.product.productName;
+                this.form.productQuantity = '';
+                this.form.productPrice = item.product.productPrice;
+                this.form.meassurement = item.product.meassurement;
+                this.form.minimumQty = item.product.minimumQty;  
+                this.updatedId = item.product.id 
+            },
+            editTabel(item,index){
+                console.log(item)
+                this.typeInput = 'editTabel';
+                this.dialogTab = true;
+                this.formTabel.qty = item.itemQty;
+                this.formTabel.id = item.id ;
+                this.formTabel.index = index;
+            },
+            deleteTabel(index){
+                this.productRestockDetails.splice(index,1)
+            },
+            setEditTabel(){
+                let edit = {
+                    itemQty: this.formTabel.qty
                 }
-            })
-            this.isArrived = 0;
-            this.createdBy = this.$store.getters.loggedInEmployee;
-            this.e6 = 3;
-            console.log(this.suppliers_id)
-            console.log(this.isArrived)
-            console.log(this.createdBy)
-        },
-        setForm(){
-            if (this.typeInput === 'new') { 
-                this.sendData() 
-            } else if(this.typeInput === 'editTabel'){
-                this.setEditTabel()
-            }
-            else { 
-                console.log("dddd")
-                this.setTabel() 
-            } 
-        },
-        closeForm() {
-            this.resetForm()
-            this.dialog = false
-            this.dialogTab = false
-            this.dialogSup = false
-        },
-        resetForm(){ 
-            this.$refs.form.reset()
-        }  
-        }, 
-        mounted(){ 
-            this.getDataProduk();
-            this.getSupplier();
-        }, 
-    } 
+                Object.assign(this.productRestockDetails[this.formTabel.index], edit)
+                this.closeForm();
+            },
+            setTabel(){
+                let i = 0;
+                let restock = {
+                    created: this.$store.getters.loggedInEmployee,
+                    id: this.updatedId,
+                    name: this.form.productName,
+                    qty: this.form.productQuantity,
+                    meassurement: this.form.meassurement
+                }
+                for(i=0;i<this.temp.length;i++){
+                    this.productRestockDetails.push({
+                    'createdBy': restock.created,
+                    'Products_id': restock.id, 
+                    'name': restock.name, 
+                    'itemQty': restock.qty, 
+                    'meassurement': restock.meassurement})
+                }
+                console.log(this.productRestockDetails)
+                this.closeForm()
+            },
+            setFinal(){
+                this.suppliers.forEach(element => {
+                    if(element.supplier === this.formTabel.sup) {
+                        this.suppliers_id = element.id
+                    }
+                })
+                this.isArrived = 0;
+                this.createdBy = this.$store.getters.loggedInEmployee;
+                let restfin = {
+                    Suppliers_id: this.suppliers_id,
+                    isArrived: this.isArrived,
+                    productRestockDetails: this.productRestockDetails,
+                    createdBy: this.createdBy
+                }
+
+                var uri =this.$apiUrl + 'productrestock/insert' 
+                this.$http.post(uri,this.$qs.stringify(restfin), {headers: {
+                'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+                }}).then(response =>{ 
+                        this.snackbar = true; //mengaktifkan snackbar 
+                        this.color = 'green'; //memberi warna snackbar 
+                        this.text = response.data.message; //memasukkan pesan ke snackbar 
+                        
+                        this.load = false; 
+                        this.dialog = false  
+                        this.resetForm(); 
+                    }).catch(error =>{ 
+                        this.errors = error 
+                        this.snackbar = true; 
+                        this.text = 'Try Again'; 
+                        this.color = 'red'; 
+                        this.load = false; 
+                    }) 
+                this.e6 = 3;
+            },
+            setForm(){
+                if (this.typeInput === 'new') { 
+                    this.sendData() 
+                } else if(this.typeInput === 'editTabel'){
+                    this.setEditTabel()
+                }
+                else { 
+                    console.log("dddd")
+                    this.setTabel() 
+                } 
+            },
+            closeForm() {
+                this.resetForm()
+                this.dialog = false
+                this.dialogTab = false
+                this.dialogSup = false
+            },
+            resetForm(){ 
+                this.$refs.form.reset()
+            }  
+            }, 
+            mounted(){ 
+                this.getDataProduk();
+                this.getSupplier();
+                this.getDataRestock();
+            }, 
+        } 
 </script>
