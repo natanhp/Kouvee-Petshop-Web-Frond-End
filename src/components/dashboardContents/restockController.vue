@@ -177,7 +177,7 @@
                             </v-row>
                         </v-container>
                     </div>
-                    <v-btn color="primary" @click="e6 = 1">Continue</v-btn>
+                    <v-btn color="primary" @click="setAwal()">Continue</v-btn>
                 </v-stepper-content>
             </v-stepper>
         </v-app>
@@ -321,7 +321,8 @@ export default {
                     this.snackbar = true; 
                     this.text = response.data.message; 
                     this.color = 'green' 
-                    this.deleteDialog = false; 
+                    this.deleteDialog = false;
+                    this.getDataRestock()
                 }).catch(error =>{ 
                     this.errors = error 
                     this.snackbar = true; 
@@ -350,6 +351,11 @@ export default {
             },
             deleteTabel(index){
                 this.productRestockDetails.splice(index,1)
+            },
+            setAwal(){
+                this.getDataProduk();
+                this.productRestockDetails = [];
+                this.e6 = 1;
             },
             setEditTabel(){
                 let edit = {
@@ -400,10 +406,10 @@ export default {
                         this.snackbar = true; //mengaktifkan snackbar 
                         this.color = 'green'; //memberi warna snackbar 
                         this.text = response.data.message; //memasukkan pesan ke snackbar 
-                        
                         this.load = false; 
                         this.dialog = false  
-                        this.resetForm(); 
+                        this.resetForm();
+                        this.getDataRestock();
                     }).catch(error =>{ 
                         this.errors = error 
                         this.snackbar = true; 
