@@ -37,9 +37,9 @@
                                                 <v-btn 
                                                     icon 
                                                     color="indigo" 
-                                                    light 
-                                                    @click="editHandler(item)" 
-                                                > 
+                                                    light
+                                                    @click="editHandler(item)"
+                                                >
                                                     <v-icon>mdi-pencil</v-icon>
                                                 </v-btn>
                                             </td> 
@@ -73,7 +73,7 @@
                         </v-card> 
                     </v-dialog>
                     <!-- Button -->
-                    <v-btn color="primary" @click="e6 = 2">Continue</v-btn>
+                    <v-btn color="primary" @click="e6=2">Continue</v-btn>
                     <v-btn text @click="e6=3">Konfirmasi</v-btn>
                 </v-stepper-content>
 
@@ -97,7 +97,7 @@
                                             icon 
                                             color="indigo" 
                                             light 
-                                            @click="editTabel(item,index)" 
+                                            @click="editTabel(item,index)"
                                         > 
                                             <v-icon>mdi-pencil</v-icon>
                                         </v-btn>
@@ -167,8 +167,8 @@
                                     </v-list-item>
                                     <v-flex cols="3" v-for="(temp,index) in item.productRestockDetails" :key="index">
                                         <v-list-item-content>
-                                            <v-list-item-subtitle class="text-center">Nama: {{temp.product_name}}</v-list-item-subtitle>
-                                            <v-list-item-subtitle class="text-center">Jumlah: {{temp.itemQty}}</v-list-item-subtitle>
+                                            <v-list-item-subtitle class="text-center">Nama Produk: {{temp.product_name}}</v-list-item-subtitle>
+                                            <v-list-item-subtitle class="text-center">Jumlah Produk: {{temp.itemQty}}</v-list-item-subtitle>
                                         </v-list-item-content>
                                     </v-flex>
                                     <v-btn color="blue darken-1" text @click="setConfirm(item.id)">Konfirm</v-btn> 
@@ -249,6 +249,9 @@ export default {
                 'name': '', 
                 'itemQty': '', 
                 'meassurement': ''
+            }],
+            temp2: [{
+                'id': ''
             }],
             productRestockDetails: [],
             suppliers: [],
@@ -381,7 +384,11 @@ export default {
                     'itemQty': restock.qty, 
                     'meassurement': restock.meassurement})
                 }
-                console.log(this.productRestockDetails)
+                for(i=0;i<this.temp2.length;i++){
+                    this.postition.push({
+                        'id': restock.id,
+                    })
+                }
                 this.closeForm()
             },
             setFinal(){
@@ -407,7 +414,8 @@ export default {
                         this.color = 'green'; //memberi warna snackbar 
                         this.text = response.data.message; //memasukkan pesan ke snackbar 
                         this.load = false; 
-                        this.dialog = false  
+                        this.dialog = false
+                        this.formTabel.sup = ''
                         this.resetForm();
                         this.getDataRestock();
                     }).catch(error =>{ 
