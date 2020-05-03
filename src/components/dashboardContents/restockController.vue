@@ -39,6 +39,7 @@
                                                     color="indigo" 
                                                     light
                                                     @click="editHandler(item)"
+                                                    :disabled="btn"
                                                 >
                                                     <v-icon>mdi-pencil</v-icon>
                                                 </v-btn>
@@ -73,7 +74,7 @@
                         </v-card> 
                     </v-dialog>
                     <!-- Button -->
-                    <v-btn color="primary" @click="e6=2">Continue</v-btn>
+                    <v-btn color="primary" @click="e6 = 2">Continue</v-btn>
                     <v-btn text @click="e6=3">Konfirmasi</v-btn>
                 </v-stepper-content>
 
@@ -107,8 +108,8 @@
                                                 light 
                                                 @click="deleteTabel(index)"
                                             > 
-                                                <v-icon>mdi-delete</v-icon>
-                                            </v-btn> 
+                                            <v-icon>mdi-delete</v-icon>
+                                        </v-btn> 
                                     </td>
                                 </tr> 
                             </tbody> 
@@ -145,7 +146,7 @@
                         </v-card> 
                     </v-dialog>
                     <v-btn color="primary" @click="setFinal()">Set</v-btn>
-                    <v-btn v-if="this.Back == true" text @click="e6=1">Cancel</v-btn>
+                    <v-btn v-if="this.Back == true" text @click="e6 = 1">Cancel</v-btn>
                     <v-btn v-if="this.Ok == true" text @click="lastEnd()">Continue + Print</v-btn>
                 </v-stepper-content>
 
@@ -194,6 +195,7 @@ export default {
             e6: 1,
             Ok: false,
             Back: true,
+            btn: false,
             dialog: false,
             dialogTab: false,
             dialogSup: false,
@@ -294,7 +296,7 @@ export default {
             typeInput: 'new', 
             errors : '', 
             updatedId : '',
-            a: 0
+            a: 0,
         } 
     },
     methods:{ 
@@ -346,7 +348,6 @@ export default {
                 }) 
             },
             editHandler(item){ 
-                console.log(this.supplier)
                 this.typeInput = 'edit'; 
                 this.dialog = true; 
                 this.form.productName = item.product.productName;
@@ -354,10 +355,10 @@ export default {
                 this.form.productPrice = item.product.productPrice;
                 this.form.meassurement = item.product.meassurement;
                 this.form.minimumQty = item.product.minimumQty;  
-                this.updatedId = item.product.id 
+                this.updatedId = item.product.id;
+                this.list.push(this.updatedId)
             },
             editTabel(item,index){
-                console.log(item)
                 this.typeInput = 'editTabel';
                 this.dialogTab = true;
                 this.formTabel.qty = item.itemQty;
@@ -388,6 +389,7 @@ export default {
                     qty: this.form.productQuantity,
                     meassurement: this.form.meassurement
                 }
+
                 for(i=0;i<this.temp.length;i++){
                     this.productRestockDetails.push({
                     'createdBy': restock.created,
@@ -438,13 +440,12 @@ export default {
                  this.printPDF();
                  this.Ok = false;
                  this.Back = true;
+                 this.a = 0;
                  this.formTabel.sup = ''
                  this.e6=3;
             },
             setForm(){
-                if (this.typeInput === 'new') { 
-                    this.sendData() 
-                } else if(this.typeInput === 'editTabel'){
+                if(this.typeInput === 'editTabel'){
                     this.setEditTabel()
                 }
                 else { 
@@ -478,7 +479,6 @@ export default {
                 var month = bulan[months]
                 var year = new Date().getFullYear()
                 var id;
-                var no = [];
 
                 this.suppliers.forEach(element => {
                     if(element.supplier === this.formTabel.sup) {
@@ -499,9 +499,6 @@ export default {
                 var address = JSON.stringify(this.address_sup)
                 var nomor = JSON.stringify(this.nomor_sup)
                 var id = JSON.stringify(this.id_struk)
-
-                console.log(id)
-                console.log(this.productRestockDetails.length)
 
                 this.productRestockDetails.forEach(element =>{
                     var temp = [this.no(), element.name, element.meassurement, element.itemQty];
