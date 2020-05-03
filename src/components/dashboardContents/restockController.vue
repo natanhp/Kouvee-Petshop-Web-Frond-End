@@ -294,6 +294,7 @@ export default {
             typeInput: 'new', 
             errors : '', 
             updatedId : '',
+            a: 0
         } 
     },
     methods:{ 
@@ -460,6 +461,13 @@ export default {
             resetForm(){ 
                 this.$refs.form.reset()
             },
+            no(){
+                for(let i = 0 ; i < this.productRestockDetails.length ; i++)
+                {
+                    this.a = this.a + (i+1);
+                    return this.a
+                }
+            },
             printPDF(){
                 var doc = new jspdf("a6");
                 var col = ["No", "Nama Produk", "Satuan", "Jumlah"];
@@ -470,6 +478,7 @@ export default {
                 var month = bulan[months]
                 var year = new Date().getFullYear()
                 var id;
+                var no = [];
 
                 this.suppliers.forEach(element => {
                     if(element.supplier === this.formTabel.sup) {
@@ -492,9 +501,10 @@ export default {
                 var id = JSON.stringify(this.id_struk)
 
                 console.log(id)
+                console.log(this.productRestockDetails.length)
 
                 this.productRestockDetails.forEach(element =>{
-                    var temp = [element.index, element.name, element.meassurement, element.itemQty];
+                    var temp = [this.no(), element.name, element.meassurement, element.itemQty];
                     row.push(temp);
                 })
                 
