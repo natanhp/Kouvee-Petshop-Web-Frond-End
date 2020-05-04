@@ -277,24 +277,7 @@ export default {
             errors : '', 
             updatedId : '',
         }
-            // {items: [
-            //     { title: 'Click Me1' },
-            //     { title: 'Click Me2' },
-            //     { title: 'Click Me3' },
-            //     { title: 'Click Me4' },
-            // ], 
-            // }
     }, 
-
-    
-            // data: () => ({
-            // items: [
-            //     { title: 'Click Me1' },
-            //     { title: 'Click Me2' },
-            //     { title: 'Click Me3' },
-            //     { title: 'Click Me4' },
-            // ],
-            // }),
     methods:{ 
         getData(){ 
             var uri = this.$apiUrl + 'customers/getall' 
