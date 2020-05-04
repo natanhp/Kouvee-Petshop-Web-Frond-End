@@ -59,7 +59,7 @@
                                 <v-container> 
                                     <v-row> 
                                         <v-col cols="12"> 
-                                            <v-text-field label="*Jumlah Produk" v-model="form.productQuantity" :rules="[() => !!form.productQuantity.match(/^[0-9]*$/) && !!form.productQuantity || 'Jumlah tidak boleh kosong']" required></v-text-field>
+                                            <v-text-field label="*Jumlah Produk" v-model="form.productQuantity" :rules="[() => !!form.productQuantity.match(/^[1-9]*$/) && !!form.productQuantity || 'Jumlah harus angka 1-9 dan tidak boleh kosong']" required></v-text-field>
                                         </v-col> 
                                     </v-row> 
                                 </v-container>
@@ -131,7 +131,7 @@
                                 <v-container> 
                                     <v-row>
                                         <v-col cols="12"> 
-                                            <v-text-field label="*Jumlah Produk" v-model="formTabel.qty" :rules="[() => !!formTabel.qty.match(/^[0-9]*$/) && !!formTabel.qty || 'Jumlah tidak boleh kosong']" required></v-text-field>
+                                            <v-text-field label="*Jumlah Produk" v-model="formTabel.qty" :rules="[() => !!form.productQuantity.match(/^[1-9]*$/) && !!form.productQuantity || 'Jumlah harus angka 1-9 dan tidak boleh kosong']" required></v-text-field>
                                         </v-col> 
                                     </v-row> 
                                 </v-container>
@@ -172,7 +172,7 @@
                                             <v-list-item-subtitle class="text-center">Jumlah Produk: {{temp.itemQty}}</v-list-item-subtitle>
                                         </v-list-item-content>
                                     </v-flex>
-                                    <v-btn color="blue darken-1" text @click="setConfirm(item.id)">Konfirm</v-btn> 
+                                    <v-btn color="blue darken-1" text @click="setConfirm(item.id,index)">Konfirm</v-btn> 
                                 </v-card>
                             </v-flex>
                             </v-row>
@@ -334,7 +334,7 @@ export default {
                     this.details = response.data.data
                 })
             },
-            setConfirm(id){
+            setConfirm(id,index){
                 this.details.forEach(element => {
                     if(element.id === id){
                         this.id_str = id;
