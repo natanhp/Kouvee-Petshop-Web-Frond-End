@@ -59,8 +59,7 @@
                                 <v-container> 
                                     <v-row> 
                                         <v-col cols="12"> 
-                                            <v-text-field label="*Jumlah Produk" v-model="form.productQuantity"></v-text-field>
-                                            <!-- :rules="[() => !!form.productQuantity.match(/^[0-9]*$/) && !!form.productQuantity || 'Jumlah tidak boleh kosong']" required -->
+                                            <v-text-field label="*Jumlah Produk" v-model="form.productQuantity" :rules="[() => !!form.productQuantity.match(/^[0-9]*$/) && !!form.productQuantity || 'Jumlah tidak boleh kosong']" required></v-text-field>
                                         </v-col> 
                                     </v-row> 
                                 </v-container>
