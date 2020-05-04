@@ -38,8 +38,7 @@
                                                     icon 
                                                     color="indigo" 
                                                     light
-                                                    @click="editHandler(item)"
-                                                    :disabled="btn"
+                                                    @click="editHandler(item,index)"
                                                 >
                                                     <v-icon>mdi-pencil</v-icon>
                                                 </v-btn>
@@ -60,7 +59,8 @@
                                 <v-container> 
                                     <v-row> 
                                         <v-col cols="12"> 
-                                            <v-text-field label="*Jumlah Produk" v-model="form.productQuantity" :rules="[() => !!form.productQuantity.match(/^[0-9]*$/) && !!form.productQuantity || 'Jumlah tidak boleh kosong']" required></v-text-field>
+                                            <v-text-field label="*Jumlah Produk" v-model="form.productQuantity"></v-text-field>
+                                            <!-- :rules="[() => !!form.productQuantity.match(/^[0-9]*$/) && !!form.productQuantity || 'Jumlah tidak boleh kosong']" required -->
                                         </v-col> 
                                     </v-row> 
                                 </v-container>
@@ -195,7 +195,6 @@ export default {
             e6: 1,
             Ok: false,
             Back: true,
-            btn: false,
             dialog: false,
             dialogTab: false,
             dialogSup: false,
@@ -275,6 +274,7 @@ export default {
                 meassurement: '',
                 minimumQty: '',
                 image: '',
+                index: '',
             },
             formTabel: {
                 qty : '',
@@ -297,6 +297,7 @@ export default {
             errors : '', 
             updatedId : '',
             a: 0,
+            j: -1,
         } 
     },
     methods:{ 
@@ -347,16 +348,16 @@ export default {
                     this.color = 'red'; 
                 }) 
             },
-            editHandler(item){ 
+            editHandler(item,index){ 
                 this.typeInput = 'edit'; 
                 this.dialog = true; 
                 this.form.productName = item.product.productName;
                 this.form.productQuantity = '';
                 this.form.productPrice = item.product.productPrice;
                 this.form.meassurement = item.product.meassurement;
-                this.form.minimumQty = item.product.minimumQty;  
+                this.form.minimumQty = item.product.minimumQty;
+                this.form.index = index;
                 this.updatedId = item.product.id;
-                this.list.push(this.updatedId)
             },
             editTabel(item,index){
                 this.typeInput = 'editTabel';
@@ -381,7 +382,7 @@ export default {
                 this.closeForm();
             },
             setTabel(){
-                let i = 0;
+                let temp
                 let restock = {
                     created: this.$store.getters.loggedInEmployee,
                     id: this.updatedId,
@@ -390,14 +391,32 @@ export default {
                     meassurement: this.form.meassurement
                 }
 
-                for(i=0;i<this.temp.length;i++){
-                    this.productRestockDetails.push({
-                    'createdBy': restock.created,
-                    'Products_id': restock.id, 
-                    'name': restock.name, 
-                    'itemQty': restock.qty, 
-                    'meassurement': restock.meassurement})
+                for(let i=0;i<this.productRestockDetails.length;i++){
+                    if(this.productRestockDetails[i].Products_id === restock.id){
+                        this.j = i
+                    }
                 }
+
+                console.log(this.j)
+
+                if(this.j === -1){
+                    for(let i=0;i<this.temp.length;i++){
+                        this.productRestockDetails.push({
+                        'createdBy': restock.created,
+                        'Products_id': restock.id, 
+                        'name': restock.name, 
+                        'itemQty': restock.qty, 
+                        'meassurement': restock.meassurement})
+                    }
+                }else{
+                    if(this.productRestockDetails[this.j].Products_id === restock.id){
+                        let edit = {
+                            itemQty: parseInt(this.productRestockDetails[this.j].itemQty)+parseInt(restock.qty),
+                        }
+                        Object.assign(this.productRestockDetails[this.j], edit)
+                    }
+                }
+
                 this.closeForm()
             },
             setFinal(){
@@ -458,6 +477,7 @@ export default {
                 this.dialog = false
                 this.dialogTab = false
                 this.dialogSup = false
+                this.j = -1
             },
             resetForm(){ 
                 this.$refs.form.reset()
