@@ -63,7 +63,40 @@
                             </tr> 
                         </tbody> 
                     </template> 
-                </v-data-table> 
+                </v-data-table>
+                <v-switch 
+                v-model="change" 
+                label="LOG" 
+                value="LOG"
+                color = "green accent-3"
+                />
+                <!-- <v-flex xs6 class="text-right" v-if="change"> 
+                    <v-text-field 
+                        v-model="keywordLog"
+                        append-icon="mdi-search"
+                        label="Search" 
+                        hide-details 
+                    ></v-text-field>
+                </v-flex>
+                <v-data-table v-if="change"
+                :headers="HeadLog" 
+                :items="users" 
+                :search="keywordLog" 
+                :loading="load" >
+                    <template v-slot:body="{ items }"> 
+                        <tbody> 
+                            <tr v-for="(item,index) in items" :key="index"> 
+                                <td>{{ index + 1 }}</td> 
+                                <td>{{ item.createdAt }}</td> 
+                                <td>{{ item.updateAt }}</td> 
+                                <td>{{ item.deletedAt}}</td> 
+                                <td>{{ item.createdBy }}</td> 
+                                <td>{{item.updateBy}}</td>
+                                <td>{{item.updatedBy}}</td>
+                            </tr> 
+                        </tbody> 
+                    </template>
+                </v-data-table> -->
             </v-container> 
         </v-card> 
         <v-dialog v-model="dialog" persistent max-width="600px"> 
@@ -74,20 +107,16 @@
                 <v-card-text> 
                      <v-form ref="form">
                         <v-container> 
-                        <v-row> 
-                           
-                               
+                        <v-row>   
                             <v-col cols="12"> 
                                 <v-text-field label="Nama*" v-model="form.name" :rules="[() => !!form.name || 'Nama tidak boleh kosong']" required></v-text-field> 
                             </v-col> 
-
                             <v-col cols="12">
                                 <v-text-field label="Alamat*" v-model="form.address" :rules="[() => !!form.address || 'Alamat tidak boleh kosong']" required></v-text-field>
                             </v-col>     
                             <v-col cols="12"> 
                                 <v-text-field label="Nomor Telepon*" v-model="form.phoneNumber" :rules="[() => !!form.phoneNumber.match(/^[0-9]*$/) && !!form.phoneNumber || 'Nomor telepon harus angka dan tidak boleh kosong']" required></v-text-field> 
                             </v-col> 
-                            
                         </v-row> 
                         </v-container>
                     </v-form>
@@ -115,33 +144,6 @@
                 Close 
             </v-btn> 
         </v-snackbar> 
-<!-- 
-        <div class="text-center">
-        <v-menu>
-            <template v-slot:activator="{ on: menu }">
-            <v-tooltip bottom>
-                <template v-slot:activator="{ on: tooltip }">
-                <v-btn
-                    color="primary"
-                    dark
-                    v-on="{ ...tooltip, ...menu }"
-                >Dropdown w/ Tooltip</v-btn>
-                </template>
-                <span>Im A ToolTip</span>
-            </v-tooltip>
-            </template>
-            <v-list>
-            <v-list-item
-                v-for="(item, index) in items"
-                :key="index"
-                @click="pick"
-            >
-                <v-list-item-title>{{ item.title }}</v-list-item-title>
-            </v-list-item>
-            </v-list>
-        </v-menu>
-        </div> -->
-
     </v-container> 
 </template> 
 
@@ -173,8 +175,38 @@ export default {
                     value: null 
                 }, 
             ], 
-
-
+            // change: false,
+            // keyworLog: '',
+            // HeadLog:[
+            //     { 
+            //         text: 'No', 
+            //         value: 'no', 
+            //     }, 
+            //     {
+            //         text: 'createdAt',
+            //         value: 'createdAt',
+            //     },
+            //     {
+            //         text: 'updateAt',
+            //         value: 'updateAt',
+            //     },
+            //     {
+            //         text: 'deletedAt',
+            //         value: 'deletedAt',
+            //     },
+            //     {
+            //         text: 'createdBy',
+            //         value: 'createdBy',
+            //     },
+            //     {
+            //         text: 'updateBy',
+            //         value: 'updateBy',
+            //     },
+            //     {
+            //         text: 'updatedBy',
+            //         value: 'updatedBy',
+            //     },
+            // ],
             suppliers: [], 
             snackbar: false, 
             color: null, 
@@ -189,24 +221,7 @@ export default {
             errors : '', 
             updatedId : '', 
         }
-            // {items: [
-            //     { title: 'Click Me1' },
-            //     { title: 'Click Me2' },
-            //     { title: 'Click Me3' },
-            //     { title: 'Click Me4' },
-            // ], 
-            // }
     }, 
-
-    
-            // data: () => ({
-            // items: [
-            //     { title: 'Click Me1' },
-            //     { title: 'Click Me2' },
-            //     { title: 'Click Me3' },
-            //     { title: 'Click Me4' },
-            // ],
-            // }),
     methods:{ 
         getData(){ 
             var uri = this.$apiUrl + 'suppliers/getall' 

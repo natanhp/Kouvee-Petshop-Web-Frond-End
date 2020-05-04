@@ -94,6 +94,11 @@ export default {
                     icon: 'mdi-book-open',
                     route: '/servicedetail'
                 },
+                {
+                    title: 'Restock Produk',
+                    icon: 'mdi-forklift',
+                    route: '/restock'
+                },
             ],
             itemCSs: [
                 {

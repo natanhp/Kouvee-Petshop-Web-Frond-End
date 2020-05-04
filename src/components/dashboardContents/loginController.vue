@@ -50,9 +50,9 @@ export default {
             let username = this.form.username 
             let password = this.form.password
             this.$store.dispatch('login', { username, password }).then(response => {
-                if(response.data.data.role==="Owner") {
+                if(response.data.data[0].role==="Owner") {
                     this.$router.push('/employee')
-                } else if(response.data.data.role==="CS") {
+                } else if(response.data.data[0].role==="CS") {
                     this.$router.push('/customer')
                 }
             })
