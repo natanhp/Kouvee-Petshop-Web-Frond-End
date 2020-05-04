@@ -131,7 +131,7 @@
                                 <v-container> 
                                     <v-row>
                                         <v-col cols="12"> 
-                                            <v-text-field label="*Jumlah Produk" v-model="formTabel.qty"></v-text-field>
+                                            <v-text-field label="*Jumlah Produk" v-model="formTabel.qty" :rules="[() => !!formTabel.qty.match(/^[0-9]*$/) && !!formTabel.qty || 'Jumlah tidak boleh kosong']" required></v-text-field>
                                         </v-col> 
                                     </v-row> 
                                 </v-container>
@@ -144,7 +144,7 @@
                             </v-card-actions> 
                         </v-card> 
                     </v-dialog>
-                    <v-btn color="primary" @click="setFinal()">Set</v-btn>
+                    <v-btn color="primary" :disabled="this.Set == true" @click="setFinal()">Set</v-btn>
                     <v-btn v-if="this.Back == true" text @click="e6 = 1">Cancel</v-btn>
                     <v-btn v-if="this.Ok == true" text @click="lastEnd()">Continue + Print</v-btn>
                 </v-stepper-content>
@@ -194,6 +194,7 @@ export default {
             e6: 1,
             Ok: false,
             Back: true,
+            Set: false,
             dialog: false,
             dialogTab: false,
             dialogSup: false,
@@ -297,6 +298,7 @@ export default {
             updatedId : '',
             a: 0,
             j: -1,
+            id_str: '',
         } 
     },
     methods:{ 
@@ -333,7 +335,14 @@ export default {
                 })
             },
             setConfirm(id){
-                var uri = this.$apiUrl + 'productrestock/confirm/' + id + '/' + this.$store.getters.loggedInEmployee
+                this.details.forEach(element => {
+                    if(element.id === id){
+                        this.id_str = id;
+                    }
+                })
+                console.log(this.id_str)
+                console.log(this.$store.getters.loggedInEmployee)
+                var uri = this.$apiUrl + 'productrestock/confirm/' + this.id_str + '/' + this.$store.getters.loggedInEmployee
                 this.$http.get(uri).then(response =>{ 
                     this.snackbar = true; 
                     this.text = response.data.message; 
@@ -415,7 +424,6 @@ export default {
                         Object.assign(this.productRestockDetails[this.j], edit)
                     }
                 }
-
                 this.closeForm()
             },
             setFinal(){
@@ -442,6 +450,7 @@ export default {
                         this.text = response.data.message; //memasukkan pesan ke snackbar 
                         this.load = false; 
                         this.dialog = false;
+                        this.Set = true;
                         this.Ok = true;
                         this.Back = false;
                         this.resetForm();
@@ -458,6 +467,7 @@ export default {
                  this.printPDF();
                  this.Ok = false;
                  this.Back = true;
+                 this.Set = false;
                  this.a = 0;
                  this.formTabel.sup = ''
                  this.e6=3;
@@ -542,7 +552,7 @@ export default {
                 doc.text(135,290,'Dicetak tanggal : '+day+' - '+month+' - '+year+' ');
 
                 doc.autoTable(col,row,{startY:120, theme:'grid'})
-                doc.save("try.pdf")
+                doc.save('Struk Pengadaan '+ id +' ')
             }   
         },
         mounted(){ 
