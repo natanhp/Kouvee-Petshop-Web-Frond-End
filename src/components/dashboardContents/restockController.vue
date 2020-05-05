@@ -73,7 +73,7 @@
                         </v-card> 
                     </v-dialog>
                     <!-- Button -->
-                    <v-btn color="primary" @click="e6 = 2">Continue</v-btn>
+                    <v-btn color="primary" @click="e6=2">Continue</v-btn>
                     <v-btn text @click="e6=3">Konfirmasi</v-btn>
                 </v-stepper-content>
 
@@ -542,13 +542,14 @@ export default {
 
                 doc.setFont("times");
                 doc.setFontSize(20);
-                doc.text(25,80,"Kepada Yth : ");
+                doc.text(20,80,"Kepada Yth : ");
                 doc.setFontSize(14);
                 doc.text(145,75,'No : ' + id + '');
                 doc.text(145,80,'Tanggal : '+day+' - '+month+' - '+year+' ');
-                doc.text(25,85,name);
-                doc.text(25,90,address);
-                doc.text(25,95,nomor);
+                doc.text(20,85,name);
+                doc.text(20,90,address);
+                doc.text(20,95,nomor);
+                doc.text(20,115,'Mohon untuk disediakan produk-produk ini : ')
                 doc.text(135,290,'Dicetak tanggal : '+day+' - '+month+' - '+year+' ');
 
                 doc.autoTable(col,row,{startY:120, theme:'grid'})
