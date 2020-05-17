@@ -5,6 +5,7 @@
                 <v-list-item-content>
                     <v-list-item-title v-if="this.$store.getters.employeeRole === 'Owner'" class="title">MENU OWNER</v-list-item-title>
                     <v-list-item-title v-if="this.$store.getters.employeeRole === 'CS'" class="title">MENU CS</v-list-item-title>
+                     <v-list-item-title v-if="this.$store.getters.employeeRole === 'Kasir'" class="title">MENU KASIR</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
             
@@ -22,6 +23,17 @@
             </v-list>
             <v-list v-if="this.$store.getters.employeeRole === 'CS'">
                 <v-list-item v-for="item in itemCSs" :key="item.title" link>
+                    <v-list-item-icon>
+                        <v-icon>{{ item.icon }}</v-icon>
+                    </v-list-item-icon>
+
+                    <v-list-item-content>
+                        <v-list-item-title><v-btn text router v-bind:to="item.route">{{item.title}}</v-btn></v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+            </v-list>
+             <v-list v-if="this.$store.getters.employeeRole === 'Kasir'">
+                <v-list-item v-for="item in itemKasirs" :key="item.title" link>
                     <v-list-item-icon>
                         <v-icon>{{ item.icon }}</v-icon>
                     </v-list-item-icon>
@@ -111,7 +123,19 @@ export default {
                     icon: 'mdi-dog',
                     route: '/pet'
                 },
-            ]
+                {
+                    title: 'Transaksi Produk',
+                    icon: 'mdi-cart',
+                    route: '/transProduct'
+                },
+            ],
+            itemKasirs: [
+                {
+                    title: 'Transaksi Produk',
+                    icon: 'mdi-cart',
+                    route: '/transProductKS'
+                },
+            ],
         }
     },
     methods:{

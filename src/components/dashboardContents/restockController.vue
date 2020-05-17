@@ -59,7 +59,7 @@
                                 <v-container> 
                                     <v-row> 
                                         <v-col cols="12"> 
-                                            <v-text-field label="*Jumlah Produk" v-model="form.productQuantity" :rules="[() => !!form.productQuantity.match(/^[1-9]*$/) && !!form.productQuantity || 'Jumlah harus angka 1-9 dan tidak boleh kosong']" required></v-text-field>
+                                            <v-text-field label="*Jumlah Produk" v-model="form.productQuantity" :rules="[() => !!form.productQuantity.match(/^[0-9]*$/) && !!form.productQuantity || 'Jumlah harus angka 1-9 dan tidak boleh kosong']" required></v-text-field>
                                         </v-col> 
                                     </v-row> 
                                 </v-container>
@@ -131,7 +131,7 @@
                                 <v-container> 
                                     <v-row>
                                         <v-col cols="12"> 
-                                            <v-text-field label="*Jumlah Produk" v-model="formTabel.qty" :rules="[() => !!form.productQuantity.match(/^[1-9]*$/) && !!form.productQuantity || 'Jumlah harus angka 1-9 dan tidak boleh kosong']" required></v-text-field>
+                                            <v-text-field label="*Jumlah Produk" v-model="formTabel.qty" :rules="[() => !!form.productQuantity.match(/^[0-9]*$/) && !!form.productQuantity || 'Jumlah harus angka 1-9 dan tidak boleh kosong']" required></v-text-field>
                                         </v-col> 
                                     </v-row> 
                                 </v-container>

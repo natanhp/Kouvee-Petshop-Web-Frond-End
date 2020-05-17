@@ -112,6 +112,24 @@ const routes = [
                     requiresAuth: true,
                     role: "CS"
                 } 
+            },
+            {
+                name: 'transactionProductController',
+                path: '/transProduct',
+                component: loadView('transactionProductController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "CS"
+                } 
+            },
+            {
+                name: 'transactionProductKSController',
+                path: '/transProductKS',
+                component: loadView('transactionProductKSController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "Kasir"
+                } 
             }
         ],     
     },   
