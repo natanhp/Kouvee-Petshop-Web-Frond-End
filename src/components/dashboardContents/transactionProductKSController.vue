@@ -172,7 +172,7 @@
                         </v-btn> 
                     </v-snackbar>
                     <v-btn color="primary" @click="setKonfirm()">Continue</v-btn>
-                    <v-btn text @click="e6=1">Cancel</v-btn>
+                    <v-btn text @click="backConfirm()">Cancel</v-btn>
                 </v-stepper-content>
             </v-stepper>
         </v-app>
@@ -334,6 +334,14 @@ export default {
                 })
 
             this.getDataTransaksi();
+            this.productTransactionDetails = [];
+            this.e6 = 1;
+        },
+        backConfirm(){
+            this.productTransactionDetails = [];
+            this.typeInput = '';
+            this.subTotal = [];
+            this.total = 0;
             this.e6 = 1;
         },
         editHandler(item){
@@ -343,6 +351,7 @@ export default {
             this.productTransactionDetails = item.productTransactionkDetails;
             this.transaction_id = item.id
             this.alert = true;
+            console.log(this.$store.getters.employeeName)
         },
         setSubTotal(){
             for(let i = 0; i<this.productTransactionDetails.length ; i++){
@@ -373,14 +382,13 @@ export default {
             }
         },
         setTabel(){
-            this.setSubTotal();
-
             if(this.id === null){
                 this.dis = false
             }else{
                 this.dis = true
             }
             
+            this.setSubTotal();
             this.setTotal()
             this.$set(this.subTotal)
             this.alert = false
