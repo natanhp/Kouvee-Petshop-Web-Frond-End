@@ -171,7 +171,7 @@
                             Close 
                         </v-btn> 
                     </v-snackbar>
-                    <v-btn color="primary" @click="printPDF()">Continue</v-btn>
+                    <v-btn color="primary" @click="setKonfirm()">Continue</v-btn>
                     <v-btn text @click="e6=1">Cancel</v-btn>
                 </v-stepper-content>
             </v-stepper>
@@ -196,6 +196,9 @@ export default {
             colorCal : null,
             textCal : '',
             typeInput : '',
+            snackbar2 : false,
+            color2 : null,
+            text2 : '',
 
             // Transaksi Produk
             transaksi : [],
@@ -267,6 +270,7 @@ export default {
             kembalian: 0,
             a: 0,
             transaction_id: '',
+            TotalFinish: 0,
         }
     },
     methods: {
@@ -301,6 +305,36 @@ export default {
                     this.color = 'red'; 
                     this.load = false; 
                 })
+        },
+        setKonfirm(){
+            this.printPDF();
+
+            let confirm = {
+                id : this.transaction_id,
+                total : this.TotalFinish,
+                updatedBy : this.$store.getters.loggedInEmployee
+            }
+
+            var uri =this.$apiUrl + 'producttransaction/kasir/confirm' 
+            this.$http.put(uri,this.$qs.stringify(confirm), {headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+            }}).then(response =>{ 
+                    this.snackbar2 = true; //mengaktifkan snackbar 
+                    this.color2 = 'green'; //memberi warna snackbar 
+                    this.text2 = response.data.message; //memasukkan pesan ke snackbar 
+                    this.load = false; 
+                    this.dialog = false;
+                    this.resetForm();
+                }).catch(error =>{ 
+                    this.errors = error 
+                    this.snackbar2 = true; 
+                    this.text2 = 'Try Again'; 
+                    this.color2 = 'red'; 
+                    this.load = false; 
+                })
+
+            this.getDataTransaksi();
+            this.e6 = 1;
         },
         editHandler(item){
             this.typeInput = 'new';
@@ -436,6 +470,8 @@ export default {
 
             diskon = JSON.stringify(parseInt(this.formBayar.diskon))
             total = JSON.stringify(parseInt(temptotal) - parseInt(tempdis))
+
+            this.TotalFinish = total
 
             var width = doc.internal.pageSize.getWidth();
 
