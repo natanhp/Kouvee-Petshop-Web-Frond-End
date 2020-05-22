@@ -41,6 +41,14 @@
                                                 > 
                                                 <v-icon>mdi-plus</v-icon>
                                                 </v-btn>
+                                                <v-btn
+                                                    icon
+                                                    color="error"
+                                                    light 
+                                                    @click="deleteTransaksi(item.id)"
+                                                > 
+                                                    <v-icon>mdi-delete</v-icon>
+                                                </v-btn>
                                             </td> 
                                         </tr> 
                                     </tbody> 
@@ -82,7 +90,7 @@
                                                 icon
                                                 color="error"
                                                 light 
-                                                @click="deleteTabel(index)"
+                                                @click="deleteTabel(item,index)"
                                             > 
                                             <v-icon>mdi-delete</v-icon>
                                         </v-btn> 
@@ -337,6 +345,21 @@ export default {
             this.productTransactionDetails = [];
             this.e6 = 1;
         },
+        deleteTransaksi(deleteId){
+            var uri = this.$apiUrl + 'producttransaction/kasir/deletetransactionbyid/' + deleteId + '/' + this.$store.getters.loggedInEmployee
+            this.$http.delete(uri).then(response =>{ 
+                this.snackbar = true; 
+                this.text = response.data.message; 
+                this.color = 'green' 
+                this.deleteDialog = false; 
+                this.getDataTransaksi(); 
+            }).catch(error =>{ 
+                this.errors = error 
+                this.snackbar = true; 
+                this.text = 'Try Again'; 
+                this.color = 'red'; 
+            }) 
+        },
         backConfirm(){
             this.productTransactionDetails = [];
             this.typeInput = '';
@@ -413,8 +436,23 @@ export default {
             this.updateDataTransaksi();
             this.closeForm();
         },
-        deleteTabel(index){
+        deleteTabel(item,index){
             this.productTransactionDetails.splice(index,1)
+            this.subTotal = [];
+            this.setSubTotal();
+            this.setTotal();
+            var uri = this.$apiUrl + 'producttransaction/kasir/deletedetailbyid/' + item.id + '/' + this.$store.getters.loggedInEmployee
+            this.$http.delete(uri).then(response =>{ 
+                this.snackbar = true; 
+                this.text = response.data.message; 
+                this.color = 'green' 
+                this.deleteDialog = false;
+            }).catch(error =>{ 
+                this.errors = error 
+                this.snackbar = true; 
+                this.text = 'Try Again'; 
+                this.color = 'red'; 
+            }) 
         },
         setForm(){
             if(this.typeInput === 'new'){
