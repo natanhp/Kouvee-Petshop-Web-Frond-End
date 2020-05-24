@@ -123,9 +123,27 @@ const routes = [
                 } 
             },
             {
+                name: 'transactionServiceController',
+                path: '/transService',
+                component: loadView('transactionServiceController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "CS"
+                } 
+            },
+            {
                 name: 'transactionProductKSController',
                 path: '/transProductKS',
                 component: loadView('transactionProductKSController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "Kasir"
+                } 
+            },
+            {
+                name: 'transactionServiceKSController',
+                path: '/transServiceKS',
+                component: loadView('transactionServiceKSController'),
                 meta: { 
                     requiresAuth: true,
                     role: "Kasir"

@@ -3,13 +3,15 @@
         <v-app id="inspire">
             <v-stepper v-model="e6" vertical>
                 <v-stepper-step :complete="e6 > 1" step="1">
-                    Pilih Transaksi Produk
+                    Layanan
+                    <small>Layanan Yang Sudah Di Konfirmasi</small>
                 </v-stepper-step>
 
                 <v-stepper-content step="1">
+                    
                     <v-card>
                         <v-container grid-list-md mb-0>
-                            <h2 class="text-md-center">Data Transaksi</h2> 
+                            <h2 class="text-md-center">Data Layanan</h2> 
                             <v-layout row wrap style="margin:10px"> 
                                 <v-flex xs6 class="text-right"> 
                                     <v-text-field 
@@ -22,7 +24,7 @@
                             </v-layout> 
                             <v-data-table 
                                 :headers="headers" 
-                                :items="transaksi" 
+                                :items="services" 
                                 :search="keyword" 
                                 :loading="load" 
                             > 
@@ -31,21 +33,22 @@
                                         <tr v-for="(item,index) in items" :key="index"> 
                                             <td>{{ index + 1 }}</td>
                                             <td>{{ item.id }}</td>
-                                            <td>{{ item.customer.name }}</td>
+                                            <td>{{ item.customer.name }}</td>  
+                                            <td>{{ item.pet.name}}</td>
                                             <td> 
                                                 <v-btn 
                                                     icon 
                                                     color="indigo" 
-                                                    light 
-                                                    @click="editHandler(item)"
+                                                    light
+                                                    @click="editHandle(item)"
                                                 > 
                                                 <v-icon>mdi-plus</v-icon>
                                                 </v-btn>
                                                 <v-btn
                                                     icon
                                                     color="error"
-                                                    light 
-                                                    @click="deleteTransaksi(item.id)"
+                                                    light
+                                                    @click="deleteServiceDetail(item.id)"
                                                 > 
                                                     <v-icon>mdi-delete</v-icon>
                                                 </v-btn>
@@ -56,79 +59,79 @@
                             </v-data-table>
                         </v-container> 
                     </v-card>
-                    <v-alert type="success" v-if="alert === true"> Berhasil </v-alert>
-                    <v-btn color="primary" @click="setForm()">Continue</v-btn>
+
+                     <v-snackbar 
+                        v-model="snackbar"
+                        :color="color" 
+                        :multi-line="true" 
+                        :timeout="3000"
+                    > 
+                        {{ text }} 
+                        <v-btn 
+                            dark 
+                            text 
+                            @click="snackbar = false" 
+                        > 
+                            Close 
+                        </v-btn> 
+                    </v-snackbar>
+
+                    <v-btn color="primary" @click="setTabel()">Continue</v-btn>
                 </v-stepper-content>
 
-                <v-stepper-step :complete="e6 > 2" step="2">Pembayaran</v-stepper-step>
+                <v-stepper-step :complete="e6 > 2" step="2">Konfirmasi</v-stepper-step>
 
                 <v-stepper-content step="2">
-                    <v-data-table class="my"
-                        :headers="headersProTable"
-                        :items="productTransactionDetails"
-                        :loading="load" 
-                    >
-                        <template v-slot:body="{ items }"> 
-                            <tbody> 
-                                <tr v-for="(item,index) in items" :key="index"> 
-                                    <td>{{ index + 1 }}</td>
-                                    <td>{{ item.product.productName }}</td>
-                                    <td>{{ item.itemQty }}</td>
-                                    <td>{{ item.product.productPrice }}</td>
-                                    <td>{{ item.product.meassurement }}</td>
-                                    <td>{{ subTotal[index] }}</td>
-                                    <td>
-                                        <v-btn 
-                                            icon 
-                                            color="indigo" 
-                                            light 
-                                            @click="editTabel(item,index)"
-                                        > 
-                                            <v-icon>mdi-pencil</v-icon>
-                                        </v-btn>
-                                        <v-btn
-                                                icon
-                                                color="error"
-                                                light 
-                                                @click="deleteTabel(item,index)"
-                                            > 
-                                            <v-icon>mdi-delete</v-icon>
-                                        </v-btn> 
-                                    </td>
-                                </tr> 
-                            </tbody> 
-                        </template>
-                    </v-data-table>
-                    <v-dialog v-model="dialogTab" persistent max-width="600px"> 
-                        <v-card> 
-                            <v-card-title> 
-                                <span class="headline">Jumlah Produk</span> 
-                            </v-card-title> 
-                            <v-card-text> 
-                                <v-form ref="formBayar">
-                                <v-container> 
-                                    <v-row>
-                                        <v-col cols="12"> 
-                                            <v-text-field label="*Jumlah Produk" v-model="formBayar.qty" :rules="[() => !!formBayar.qty.match(/^[0-9]*$/) && !!formBayar.qty || 'Jumlah harus angka 1-9 dan tidak boleh kosong']" required></v-text-field>
-                                        </v-col> 
-                                    </v-row> 
-                                </v-container>
-                                </v-form>
-                            </v-card-text> 
-                            <v-card-actions> 
-                                <v-spacer></v-spacer> 
-                                <v-btn color="blue darken-1" text @click="closeForm()">Batal</v-btn> 
-                                <v-btn color="blue darken-1" text @click="setForm()">Simpan</v-btn> 
-                            </v-card-actions> 
-                        </v-card> 
-                    </v-dialog>
+                    
+                    <v-card>
+                        <v-container grid-list-md mb-0>
+                            <h2 class="text-md-center">Data Layanan</h2> 
+                            <v-layout row wrap style="margin:10px"> 
+                                <v-flex xs6 class="text-right"> 
+                                    <v-text-field 
+                                        v-model="searchTabel"
+                                        append-icon="mdi-search"
+                                        label="Pencarian" 
+                                        hide-details 
+                                    ></v-text-field>
+                                </v-flex> 
+                            </v-layout> 
+                            <v-data-table 
+                                :headers="headersTabel" 
+                                :items="detailServices" 
+                                :search="searchTabel" 
+                                :loading="loadTabel" 
+                            > 
+                                <template v-slot:body="{ items }"> 
+                                    <tbody> 
+                                        <tr v-for="(item,index) in items" :key="index"> 
+                                            <td>{{ index + 1 }}</td>
+                                            <td>{{ item.service.complete_name }}</td>
+                                            <td>{{ item.service.price}}</td>
+                                            <td> 
+                                                <v-btn
+                                                    icon
+                                                    color="error"
+                                                    light
+                                                    @click="deleteTabel(item,index)"
+                                                > 
+                                                    <v-icon>mdi-delete</v-icon>
+                                                </v-btn>
+                                            </td> 
+                                        </tr> 
+                                    </tbody> 
+                                </template> 
+                            </v-data-table>
+                        </v-container> 
+                    </v-card>
+
                     <v-container> 
                         <v-row>
                             <v-col cols="5"> 
                                 Total Biaya : {{total}}
                             </v-col>
                         </v-row>
-                        <v-row v-if="dis === true">
+                        <v-row>
                             <v-col cols="5"> 
                                 Diskon : 
                                 <v-text-field v-model="formBayar.diskon"></v-text-field>
@@ -149,7 +152,8 @@
                             </v-col>
                         </v-row>
                     </v-container>
-                    <v-snackbar 
+
+                     <v-snackbar 
                         v-model="snackbar"
                         :color="color" 
                         :multi-line="true" 
@@ -164,24 +168,11 @@
                             Close 
                         </v-btn> 
                     </v-snackbar>
-                    <v-snackbar
-                        v-model="snackbarCal"
-                        :color="colorCal" 
-                        :multi-line="true" 
-                        :timeout="3000"
-                    >
-                        {{textCal}}
-                        <v-btn 
-                            dark 
-                            text 
-                            @click="snackbarCal = false" 
-                        > 
-                            Close 
-                        </v-btn> 
-                    </v-snackbar>
-                    <v-btn color="primary" @click="setKonfirm()">Continue</v-btn>
-                    <v-btn text @click="backConfirm()">Cancel</v-btn>
+
+                    <v-btn color="primary" v-if="clear === true" @click="setConfirm()">Continue</v-btn>
+                    <v-btn text  @click="backService()">Cancel</v-btn>
                 </v-stepper-content>
+
             </v-stepper>
         </v-app>
     </div>
@@ -189,293 +180,207 @@
 <script>
 import jspdf from 'jspdf'
 import 'jspdf-autotable'
-export default {
-    data(){
-        return{
-            e6 : 1,
-            keyword: '',
-            load: false,
-            dis : false,
-            alert : false,
-            snackbar : false,
-            color : null,
-            text : '',
-            snackbarCal : false,
-            colorCal : null,
-            textCal : '',
-            typeInput : '',
-            snackbar2 : false,
-            color2 : null,
-            text2 : '',
+    export default {
+        data() {
+            return {
+                e6: 1,
+                e1: 1,
+                snackbar : false,
+                color : null,
+                text : '',
+                inputType: '',
+                clear: false,
+                a: 0,
 
-            // Transaksi Produk
-            transaksi : [],
-            headers:[
-                { 
-                    text: 'No', 
-                    value: 'no', 
+                // service
+                services: [],
+                detailServices: [],
+                keyword: '',
+                load: '',
+                headers: [
+                    { 
+                        text: 'No', 
+                        value: 'no', 
+                    }, 
+                    { 
+                        text: 'Id Layanan', 
+                        value: 'id' 
+                    },
+                    { 
+                        text: 'Nama Customer', 
+                        value: 'customer.name' 
+                    }, 
+                    { 
+                        text: 'Nama Hewan Peliharaan', 
+                        value: 'pet.name' 
+                    }, 
+                    { 
+                        text: 'Aksi', 
+                        value: null 
+                    }, 
+                ],
+                formService : {
+                    id : '',
+                    nama : '',
+                    namaPet : '',
+                    jenisPet : '',
+                    telepon : '',
+                    cs : '',
                 },
-                { 
-                    text: 'Id Transaksi', 
-                    value: 'id', 
-                },
-                { 
-                    text: 'Customer', 
-                    value: 'customer_name',
-                },
-                {
-                    text: 'Aksi',
-                    value: null
-                }
-            ],
 
-            // Konfirmasi
-            headersProTable: [
-                {
-                    text: 'No', 
-                    value: 'no', 
-                },
-                { 
-                    text: 'Nama Produk', 
-                    value: 'productName' 
-                },
-                { 
-                    text: 'Jumlah Produk', 
-                    value: 'productQuantity' 
-                },
-                { 
-                    text: 'Harga Produk', 
-                    value: 'productPrice' 
-                },
-                { 
-                    text: 'Satuan Produk', 
-                    value: 'meassurement' 
-                },
-                { 
-                    text: 'Sub Total', 
-                    value: 'subTotal' 
-                },
-                {
-                    text: 'Aksi',
-                    value: null
-                }
-
-            ],
-            formBayar:{
-                diskon: 0,
-                pembayaran: 0,
+                // Tabel Penampung
+                searchTabel: '',
+                loadTabel: '',
+                headersTabel:[
+                    { 
+                        text: 'No', 
+                        value: 'no', 
+                    }, 
+                    { 
+                        text: 'Nama Layanan', 
+                        value: 'nama_service' 
+                    },
+                    { 
+                        text: 'Harga Layanan', 
+                        value: 'price' 
+                    },
+                    { 
+                        text: 'Aksi', 
+                        value: null 
+                    }, 
+                ],
+                total: 0,
                 kembalian: 0,
-                qty: '',
-                index: '',
-                id: '',
+                formBayar: {
+                    diskon : 0,
+                    pembayaran : 0,
+                }
 
-            },
-            dialogTab: false,
-            total: 0,
-            customer:{},
-            subTotal: [],
-            productTransactionDetails: [],
-            kembalian: 0,
-            a: 0,
-            transaction_id: '',
-            TotalFinish: 0,
-        }
-    },
-    methods: {
-        getDataTransaksi(){
-            var uri = this.$apiUrl + 'producttransaction/kasir/getall' 
-            this.$http.get(uri).then(response =>{ 
-                this.transaksi=response.data.data
-            })
-        },
-        updateDataTransaksi(){
-            let update = {
-                id : this.formBayar.id,
-                Products_id : this.formBayar.product_id,
-                itemQty : this.formBayar.qty,
-                updatedBy : this.$store.getters.loggedInEmployee
             }
+        },
+        methods: {
+            getDataLayanan(){
+                var uri = this.$apiUrl + 'servicetransaction/kasir/getall' 
+                this.$http.get(uri).then(response =>{ 
+                    this.services = response.data.data
+                })
+            },
+            setTotal(){
+                let temp = 0;
+                this.detailServices.forEach(element => {
+                    temp = parseInt(temp) + parseInt(element.service.price)
+                });
+                this.total = temp
+            },
+            setHitung(){
 
-            var uri =this.$apiUrl + 'producttransaction/kasir/updatedetailbyid' 
-            this.$http.put(uri,this.$qs.stringify(update), {headers: {
-            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
-            }}).then(response =>{ 
-                    this.snackbar = true; //mengaktifkan snackbar 
-                    this.color = 'green'; //memberi warna snackbar 
-                    this.text = response.data.message; //memasukkan pesan ke snackbar 
-                    this.load = false; 
-                    this.dialog = false;
-                    this.resetForm();
+                let pemdis = (parseInt(this.formBayar.pembayaran) + parseInt(this.formBayar.diskon))
+
+                if(parseInt(pemdis) < parseInt(this.total)){
+                    this.snackbar = true;
+                    this.color = 'red';
+                    this.text = 'Jumlah Uang Kurang';
+                }else{
+                    this.kembalian = parseInt(pemdis) - parseInt(this.total)
+                    this.snackbar = true;
+                    this.color = 'green';
+                    this.text = 'Berhasil, Terimakasih';
+                    this.clear = true;
+                }
+            },
+            editHandle(item){
+                this.inputType = 'add'
+                this.formService.id = item.id
+                this.formService.nama = item.customer.name
+                this.formService.namaPet = item.pet.name
+                this.formService.jenisPet = item.pet.type
+                this.formService.telepon = item.customer.phoneNumber
+                this.formService.cs = item.cs_name
+                this.detailServices = item.service_detail
+
+                console.log(this.detailServices)
+            },
+            deleteServiceDetail(deletedId){
+                var uri = this.$apiUrl + 'servicetransaction/kasir/deletetransactionbyid/' + deletedId
+                this.$http.delete(uri).then(response =>{ 
+                    this.snackbar = true; 
+                    this.text = response.data.message; 
+                    this.color = 'green'
+                    this.getDataLayanan(); 
                 }).catch(error =>{ 
                     this.errors = error 
                     this.snackbar = true; 
                     this.text = 'Try Again'; 
                     this.color = 'red'; 
-                    this.load = false; 
-                })
-        },
-        setKonfirm(){
-            this.printPDF();
+                }) 
+            },
+            setForm(){
+                if(this.typeInput === 'add'){
+                    this.setTabel();
+                }
+            },
+            setTabel(){
+                this.setTotal();
+                this.e6 = 2;
+            },
+            deleteTabel(item,index){
+                console.log(item.id)
+            },
+            setConfirm(){
 
-            let confirm = {
-                id : this.transaction_id,
-                total : this.TotalFinish,
-                updatedBy : this.$store.getters.loggedInEmployee
-            }
+                let serfin = {
+                    id : this.formService.id,
+                    total : this.total,
+                    updatedBy : this.$store.getters.loggedInEmployee
+                }
 
-            var uri =this.$apiUrl + 'producttransaction/kasir/confirm' 
-            this.$http.put(uri,this.$qs.stringify(confirm), {headers: {
-            'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
-            }}).then(response =>{ 
-                    this.snackbar2 = true; //mengaktifkan snackbar 
-                    this.color2 = 'green'; //memberi warna snackbar 
-                    this.text2 = response.data.message; //memasukkan pesan ke snackbar 
-                    this.load = false; 
-                    this.dialog = false;
-                    this.resetForm();
-                }).catch(error =>{ 
-                    this.errors = error 
-                    this.snackbar2 = true; 
-                    this.text2 = 'Try Again'; 
-                    this.color2 = 'red'; 
-                    this.load = false; 
-                })
+                this.printPDF()
 
-            this.getDataTransaksi();
-            this.productTransactionDetails = [];
-            this.e6 = 1;
-        },
-        deleteTransaksi(deleteId){
-            var uri = this.$apiUrl + 'producttransaction/kasir/deletetransactionbyid/' + deleteId + '/' + this.$store.getters.loggedInEmployee
-            this.$http.delete(uri).then(response =>{ 
-                this.snackbar = true; 
-                this.text = response.data.message; 
-                this.color = 'green' 
-                this.deleteDialog = false; 
-                this.getDataTransaksi(); 
-            }).catch(error =>{ 
-                this.errors = error 
-                this.snackbar = true; 
-                this.text = 'Try Again'; 
-                this.color = 'red'; 
-            }) 
-        },
-        backConfirm(){
-            this.productTransactionDetails = [];
-            this.typeInput = '';
-            this.subTotal = [];
-            this.total = 0;
-            this.e6 = 1;
-        },
-        editHandler(item){
-            this.typeInput = 'new';
-            this.customer = item.customer;
-            this.id = item.Customers_id;
-            this.productTransactionDetails = item.productTransactionkDetails;
-            this.transaction_id = item.id
-            this.alert = true;
-            console.log(this.$store.getters.employeeName)
-        },
-        setSubTotal(){
-            for(let i = 0; i<this.productTransactionDetails.length ; i++){
-                this.subTotal[i] = parseInt(this.productTransactionDetails[i].itemQty) * parseInt(this.productTransactionDetails[i].product.productPrice)
-            }
-            return this.subTotal  
-        },
-        setTotal(){
-            let temp = 0;
-            for(let i = 0 ; i<this.subTotal.length ; i++){
-                temp = parseInt(temp) + parseInt(this.subTotal[i])
-            }
-            this.total = temp;
-        },
-        setHitung(){
-            let pemdis = (parseInt(this.formBayar.pembayaran) + parseInt(this.formBayar.diskon))
-
-            if(parseInt(pemdis) < parseInt(this.total)){
-                this.snackbarCal = true;
-                this.colorCal = 'red';
-                this.textCal = 'Jumlah Uang Kurang'
-            }else{
-                this.kembalian = 
-                parseInt(pemdis) - parseInt(this.total)
-                this.snackbarCal = true;
-                this.colorCal = 'green';
-                this.textCal = 'Berhasil, Terimakasih'
-            }
-        },
-        setTabel(){
-            if(this.id === null){
-                this.dis = false
-            }else{
-                this.dis = true
-            }
-            
-            this.setSubTotal();
-            this.setTotal()
-            this.$set(this.subTotal)
-            this.alert = false
-            this.e6 = 2;
-        },
-        editTabel(item,index){
-            this.typeInput = 'update';
-            this.dialogTab = true;
-            this.formBayar.qty = '';
-            this.formBayar.index = index;
-            this.formBayar.id = item.id;
-            this.formBayar.product_id = item.product.id;
-        },
-        setEditTabel(){
-            let edit = {
-                itemQty: this.formBayar.qty,
-            }
-            Object.assign(this.productTransactionDetails[this.formBayar.index], edit)
-
-            this.setSubTotal();
-            this.setTotal();
-            this.updateDataTransaksi();
-            this.closeForm();
-        },
-        deleteTabel(item,index){
-            this.productTransactionDetails.splice(index,1)
-            this.subTotal = [];
-            this.setSubTotal();
-            this.setTotal();
-            var uri = this.$apiUrl + 'producttransaction/kasir/deletedetailbyid/' + item.id + '/' + this.$store.getters.loggedInEmployee
-            this.$http.delete(uri).then(response =>{ 
-                this.snackbar = true; 
-                this.text = response.data.message; 
-                this.color = 'green' 
-                this.deleteDialog = false;
-            }).catch(error =>{ 
-                this.errors = error 
-                this.snackbar = true; 
-                this.text = 'Try Again'; 
-                this.color = 'red'; 
-            }) 
-        },
-        setForm(){
-            if(this.typeInput === 'new'){
-                this.setTabel()
-            }else{
-                this.setEditTabel()
-            }
-        },
-        closeForm() {
-            this.resetForm()
-            this.dialogTab = false
-        },
-        resetForm(){ 
-            this.$refs.formBayar.reset()
-        },
-        no(){
-            for(let i = 0 ; i < this.productTransactionDetails.length ; i++)
-            {
-                this.a = this.a + (i+1);
-                return this.a
-            }
-        },
-        printPDF(){
+                // var uri =this.$apiUrl + 'servicetransaction/kasir/confirm' 
+                // this.$http.put(uri,this.$qs.stringify(serfin), {headers: {
+                // 'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+                // }}).then(response =>{ 
+                //         this.snackbar = true; //mengaktifkan snackbar 
+                //         this.color = 'green'; //memberi warna snackbar 
+                //         this.text = response.data.message; //memasukkan pesan ke snackbar 
+                //         this.load = false; 
+                //         this.dialog = false;
+                //         this.printPDF()
+                //         this.reset();
+                //         this.e6 = 1;
+                //     }).catch(error =>{ 
+                //         this.errors = error 
+                //         this.snackbar = true; 
+                //         this.text = 'Try Again'; 
+                //         this.color = 'red'; 
+                //         this.load = false; 
+                //     })
+            },
+            backService(){
+                this.detailServices = []
+                this.total = 0
+                this.formBayar.pembayaran = 0
+                this.formBayar.diskon = 0
+                this.clear = false
+                this.e6 = 1;
+            },
+            reset(){
+                this.typeInput = '';
+                this.detailServices = []
+                this.total = 0
+                this.formBayar.pembayaran = 0
+                this.formBayar.diskon = 0
+                this.formService = {}
+                this.clear = false
+            },
+            no(){
+                for(let i = 0 ; i < this.detailServices.length ; i++)
+                {
+                    this.a = this.a + (i+1);
+                    return this.a
+                }
+            },
+            printPDF(){
             let i = 0;
             var doc = new jspdf("a6")
             var bulan = ['Januari','Febuari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']
@@ -485,43 +390,31 @@ export default {
             var year = new Date().getFullYear()
             var hour = new Date().getHours()
             var minute = new Date().getUTCMinutes()
-            var col = ["No", "Nama Produk", "Harga", "Jumlah","Harga"];
+            var col = ['No','Nama Jasa Layanan','Harga','Jumlah','Sub Total'];
             var row = [];
             var id
             var nama
+            var pet
+            var jenis
             var telepon
             var cs
-            var kasir = this.$store.getters.employeeName
-            var sub = 0
-            var diskon
-            var tempdis = this.formBayar.diskon
-            var temptotal = this.total
-            var total
-            var x
+            var kasir
+            var sub = this.total
+            var diskon = this.formBayar.diskon
+            var total = parseInt(sub) - parseInt(diskon)
+
+            id = this.formService.id
+            nama = this.formService.nama
+            pet = this.formService.namaPet
+            jenis = this.formService.jenisPet
+            telepon = this.formService.telepon
+            cs = this.formService.cs
+            kasir = this.$store.getters.employeeName
             
-            this.productTransactionDetails.forEach(element => {
-                var temp = [this.no(), element.product.productName, element.product.productPrice, element.itemQty, this.subTotal[i++]];
-                row.push(temp);
+            this.detailServices.forEach(element => {
+                var temp = [this.no(), element.service.complete_name, element.service.price, 1, element.service.price]
+                row.push(temp)
             });
-
-            this.transaksi.forEach(element => {
-                if(element.id === this.transaction_id){
-                    id = element.id
-                    nama = element.customer.name
-                    telepon = element.customer.phoneNumber
-                    cs = element.cs_name
-                }
-            });
-
-            this.subTotal.forEach(element => {
-                sub = parseInt(sub) + parseInt(element)
-            });
-
-            diskon = JSON.stringify(parseInt(this.formBayar.diskon))
-            total = JSON.stringify(parseInt(temptotal) - parseInt(tempdis))
-            x = JSON.stringify(id)
-
-            this.TotalFinish = total
 
             var width = doc.internal.pageSize.getWidth();
 
@@ -535,13 +428,13 @@ export default {
             doc.setFontSize(12);
             doc.text(140,85,'Tanggal : '+day+' - '+month+' - '+year+' '+ ''+ hour + ' : ' + minute + '');
             doc.text(20,95,id);
-            doc.text(20,110,'Nama : '+nama+' ');
+            doc.text(20,110,'Member : '+nama+' ('+pet+' - '+jenis+') ');
             doc.text(20,115,'Telepon : '+telepon+' ');
             doc.text(145,110,'CS : '+cs+' ');
             doc.text(145,115,'Kasir : '+kasir+' ');
 
             // img BASE64 produk
-                var img2 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAtoAAABKCAYAAACFF/NZAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAW6SURBVHhe7d1LqE1fHAfwdf53KAOPFBl5FANRxAADjxAZCmVGeY1RTP5SisTIa6CMPEqZyWNgwMQjZWDkUSZmLqWUDO7//tbd+3Tu/R/c65zlcnw+tVtrr73OvvvOvq1+e+3GwKAEAAB01T9VCwAAdJGgDQAABQjaAABQgKANAAAFCNoAAFCAoA0AAAUI2gAAUICgDQAABQjaAABQgKANAAAFCNoAAFCAoA0AAAU0BgZV/T9Wo9GoegAA9IIeiKi9EbQBAOB3o3QEAAAKELQBAKAAQRsAAAoQtAEAoABBGwAAChC0AQCgAEEbAAAKELQBAKAAQRsAAAoQtAEAoABBGwAAChC0AQCgAEEbAAAKaAwMqvoA/KEePnyY2/nz56cpU6bk/li8efMmvXv3Ls2YMSPNmjWrGgWgE4I2wE+og2mriRMnpoULF1Znv87z58/TokWLcv/EiRPp4MGDuT8WGzZsSHfu3EmTJk1K/f391SgAnVA6AvAT9u3bl1auXDnsiLA7efLkdOTIkfT+/ftqZnmfPn2qep378OFD1QOgU4I2QIfWr1+fj1gNjqB6/PjxtH///uoqAH8rQRugQ7dv387Hy5cv0+zZs/PY9evXc3lJiDZqqOtV7ij1iGOkuB7z4qh/+y3x+9Z7tvOtOfXz/OhvhPp5fuUKPUCvELQBuiReQpwzZ051lpo13HWZyenTp3MtdJSYxBEBNkQgjvGpU6c2y1AisMfYyEAe5/E34vcxb+7cuenKlSvV1eHqOZcuXapGhtTPE+33RAlM/Tz37t2rRgEYLUEboItaV35jB49W58+fzy8cLlmyJAfpeHkyVpVXrVqVx0OUoMT1EGNxrb5ntHH++vXrfB5zQ9y3265du5ZLYMLevXvTtm3bch+A0RO0ATpUl1dEGH369GkeixA8cpu8qN+O0PrkyZP06tWrvEPJqVOnmi8gPnjwIJegxPULFy7ksbh248aN3I+2nhvX63KVOph3S6ya16vdW7duTefOnct9AMZG0AboUF1eEXXZIVarY5u9do4dO1b1hty9eze3EZZXrFiR+2H37t355cpw8+bN3N6/fz+3Ia6HKFc5c+ZM7nfLrl27cqCPZzp79mw1CsBYCdoAHYrV6zhitfrq1avp0aNH39xPe+THZOoykHYfmVm6dGnVG/Lx48eqV1a9Kh9+5uM3AAwRtAE6VO86EiUWUT7SrXA6Xjt91KvxEbhPnjyZ+wCMnaANMI7q+uqo2W4VL0nWK8uLFy8e1obWrflevHhR9dp79uxZ1RsK748fP67O2osvS9bPdejQoVFtAwjA/wnaAONoy5YtuY0SklgNj5cqb926lV9CrO3cuTO3y5cvz22I6zE3Vpz37NlTjQ5Xh+WoHY9dROK+y5Yta75Q+T2tdd8/2gYQgPYEbYBxFKvH9TZ9EYjjpcpNmzY1V7Oj5rvevWTjxo3NuXE95saKcwTqOlS3Onr0aNVLafv27fm+/f39beeOFC9mHj58OPdjm8GLFy/mPgCj1/fvoKoPwCjFx2j6+vryyvKaNWuq0fbquevWrcthd6QdO3akefPmpWnTpuX67vggTdz38uXLOUy3irnTp09PX79+zfMOHDiQ97v+8uVL/hubN2/OH7EJ0a5duzZ9/vw5zZw5M98ztgVcsGBBLiFZvXp1c5W83TPGB2/evn2bfzthwoQf/p8ADNcYGFT1AQCALlE6AgAABQjaAABQgKANAAAFCNoAAFCAoA0AAAUI2gAAUICgDQAABQjaAABQgKANAAAFCNoAAFCAoA0AAAUI2gAAUICgDQAABQjaAABQgKANAAAFCNoAAFCAoA0AAAUI2gAAUEBjYFDV/2M1Go2qBwBAL+iBiNobQRsAAH43SkcAAKAAQRsAAAoQtAEAoABBGwAAChC0AQCgAEEbAAAKELQBAKAAQRsAAAoQtAEAoABBGwAAui6l/wBnOd5WFIG3kAAAAABJRU5ErkJggg=='
+                var img2 = 'data:image/png;base64,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'
 
             doc.addImage(img2,'PNG',0,120,width,25)
 
@@ -553,11 +446,11 @@ export default {
             doc.text(150,y+15,'Diskon    : '+diskon+' ')
             doc.text(150,y+20,'TOTAL     : '+total+' ')
 
-            doc.save('Struk Penjualan Produk' + x + '')
+            doc.save('Struk Penjualan Layanan'+id+'')
         }
-    },
-    mounted(){ 
-        this.getDataTransaksi();
-    }, 
-}
+        },
+        mounted() {
+            this.getDataLayanan()
+        },
+    }
 </script>

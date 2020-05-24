@@ -128,12 +128,22 @@ export default {
                     icon: 'mdi-cart',
                     route: '/transProduct'
                 },
+                {
+                    title: 'Transaksi Service',
+                    icon: 'mdi-cart',
+                    route: '/transService'
+                },
             ],
             itemKasirs: [
                 {
                     title: 'Transaksi Produk',
                     icon: 'mdi-cart',
                     route: '/transProductKS'
+                },
+                {
+                    title: 'Transaksi Service',
+                    icon: 'mdi-cart',
+                    route: '/transServiceKS'
                 },
             ],
         }
