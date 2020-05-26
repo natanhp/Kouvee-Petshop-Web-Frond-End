@@ -111,6 +111,21 @@ export default {
                     icon: 'mdi-forklift',
                     route: '/restock'
                 },
+                {
+                    title: 'Laporan Terlaris',
+                    icon: 'mdi-book',
+                    route: '/reportBestSeller'
+                },
+                {
+                    title: 'Laporan Pendapatan',
+                    icon: 'mdi-book',
+                    route: '/reportIncome'
+                },
+                {
+                    title: 'Laporan Pengadaan',
+                    icon: 'mdi-book',
+                    route: '/reportProcurement'
+                },
             ],
             itemCSs: [
                 {

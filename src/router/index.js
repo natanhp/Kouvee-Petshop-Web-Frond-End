@@ -96,6 +96,33 @@ const routes = [
                 } 
             },
             {
+                name: 'reportBestSellerController',
+                path: '/reportBestSeller',
+                component: loadView('reportBestSellerController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "Owner"
+                } 
+            },
+            {
+                name: 'reportIncomeController',
+                path: '/reportIncome',
+                component: loadView('reportIncomeController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "Owner"
+                } 
+            },
+            {
+                name: 'reportProcurementController',
+                path: '/reportProcurement',
+                component: loadView('reportProcurementController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "Owner"
+                } 
+            },
+            {
                 name: 'customerController',
                 path: '/customer',
                 component: loadView('customerController'),
