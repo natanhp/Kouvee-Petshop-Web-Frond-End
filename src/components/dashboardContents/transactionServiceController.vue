@@ -65,7 +65,8 @@
                                                             </tr> 
                                                         </tbody> 
                                                     </template> 
-                                                </v-data-table> 
+                                                </v-data-table>
+
                                             </v-container> 
                                         </v-card>
 
@@ -629,11 +630,30 @@
                     })
             },
             finish(item,index){
-                let edit = {
-                    isFinished : 1
+                let finish = {
+                    id : item.id,
+                    updatedBy : this.$store.getters.loggedInEmployee
                 }
-                Object.assign(this.unFinished[index], edit)
-                this.getDataUnfinished()
+
+                console.log(finish)
+
+                var uri =this.$apiUrl + 'servicetransaction/cs/finish' 
+                this.$http.put(uri,this.$qs.stringify(finish), {headers: {
+                'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+                }}).then(response =>{ 
+                        this.snackbar = true; //mengaktifkan snackbar 
+                        this.color = 'green'; //memberi warna snackbar 
+                        this.text = response.data.message; //memasukkan pesan ke snackbar 
+                        this.load = false; 
+                        this.dialog = false;
+                        this.getDataUnfinished()
+                    }).catch(error =>{ 
+                        this.errors = error 
+                        this.snackbar = true; 
+                        this.text = 'Try Again'; 
+                        this.color = 'red'; 
+                        this.load = false; 
+                    })
             },
             chooseCustomer(item){
                 this.typeInput = 'Customer';
