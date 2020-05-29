@@ -334,27 +334,27 @@ import 'jspdf-autotable'
                     updatedBy : this.$store.getters.loggedInEmployee
                 }
 
-                this.printPDF()
+                this.printPDF();
 
-                // var uri =this.$apiUrl + 'servicetransaction/kasir/confirm' 
-                // this.$http.put(uri,this.$qs.stringify(serfin), {headers: {
-                // 'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
-                // }}).then(response =>{ 
-                //         this.snackbar = true; //mengaktifkan snackbar 
-                //         this.color = 'green'; //memberi warna snackbar 
-                //         this.text = response.data.message; //memasukkan pesan ke snackbar 
-                //         this.load = false; 
-                //         this.dialog = false;
-                //         this.printPDF()
-                //         this.reset();
-                //         this.e6 = 1;
-                //     }).catch(error =>{ 
-                //         this.errors = error 
-                //         this.snackbar = true; 
-                //         this.text = 'Try Again'; 
-                //         this.color = 'red'; 
-                //         this.load = false; 
-                //     })
+                var uri =this.$apiUrl + 'servicetransaction/kasir/confirm' 
+                this.$http.put(uri,this.$qs.stringify(serfin), {headers: {
+                'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+                }}).then(response =>{ 
+                        this.snackbar = true; //mengaktifkan snackbar 
+                        this.color = 'green'; //memberi warna snackbar 
+                        this.text = response.data.message; //memasukkan pesan ke snackbar 
+                        this.load = false; 
+                        this.dialog = false;
+                        this.reset();
+                        this.getDataLayanan();
+                        this.e6 = 1;
+                    }).catch(error =>{ 
+                        this.errors = error 
+                        this.snackbar = true; 
+                        this.text = 'Try Again'; 
+                        this.color = 'red'; 
+                        this.load = false; 
+                    })
             },
             backService(){
                 this.detailServices = []
@@ -370,6 +370,7 @@ import 'jspdf-autotable'
                 this.total = 0
                 this.formBayar.pembayaran = 0
                 this.formBayar.diskon = 0
+                this.kembalian = 0
                 this.formService = {}
                 this.clear = false
             },
