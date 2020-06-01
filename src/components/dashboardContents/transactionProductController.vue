@@ -365,6 +365,7 @@
                         this.text = response.data.message; //memasukkan pesan ke snackbar 
                         this.load = false; 
                         this.dialog = false;
+                        this.getDataProduct();
                         this.resetForm();
                         this.startAll();
                     }).catch(error =>{ 

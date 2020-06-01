@@ -179,7 +179,7 @@
                             Close 
                         </v-btn> 
                     </v-snackbar>
-                    <v-btn color="primary" @click="setKonfirm()">Continue</v-btn>
+                    <v-btn color="primary" v-if="clear === true" @click="setKonfirm()">Continue</v-btn>
                     <v-btn text @click="backConfirm()">Cancel</v-btn>
                 </v-stepper-content>
             </v-stepper>
@@ -207,6 +207,7 @@ export default {
             snackbar2 : false,
             color2 : null,
             text2 : '',
+            clear:false,
 
             // Transaksi Produk
             transaksi : [],
@@ -332,6 +333,15 @@ export default {
                     this.text2 = response.data.message; //memasukkan pesan ke snackbar 
                     this.load = false; 
                     this.dialog = false;
+                    this.total = 0
+                    this.formBayar.diskon = 0
+                    this.formBayar.pembayaran = 0
+                    this.kembalian = 0
+                    this.productTransactionDetails = [];
+                    this.typeInput = '';
+                    this.subTotal = [];
+                    this.total = 0;
+                    this.clear = false
                     this.resetForm();
                 }).catch(error =>{ 
                     this.errors = error 
@@ -371,10 +381,13 @@ export default {
             this.typeInput = 'new';
             this.customer = item.customer;
             this.id = item.Customers_id;
-            this.productTransactionDetails = item.productTransactionkDetails;
+            this.productTransactionDetails = item.productTransactionDetails;
             this.transaction_id = item.id
             this.alert = true;
-            console.log(this.$store.getters.employeeName)
+            console.log(this.customer)
+            console.log(this.id)
+            console.log(this.productTransactionDetails)
+            console.log(this.transaction_id)
         },
         setSubTotal(){
             for(let i = 0; i<this.productTransactionDetails.length ; i++){
@@ -402,6 +415,7 @@ export default {
                 this.snackbarCal = true;
                 this.colorCal = 'green';
                 this.textCal = 'Berhasil, Terimakasih'
+                this.clear = true
             }
         },
         setTabel(){

@@ -126,6 +126,11 @@ export default {
                     icon: 'mdi-book',
                     route: '/reportProcurement'
                 },
+                {
+                    title: 'Log CS dan Kasir',
+                    icon: 'mdi-book',
+                    route: '/logCSandKS'
+                },
             ],
             itemCSs: [
                 {

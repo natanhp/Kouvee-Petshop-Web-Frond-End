@@ -47,6 +47,38 @@
                                     </tbody> 
                                 </template> 
                             </v-data-table>
+                            <v-switch 
+                            v-model="change" 
+                            label="LOG" 
+                            value="LOG"
+                            color = "green accent-3"
+                            />
+                            <v-flex xs6 class="text-right" v-if="change"> 
+                                <v-text-field 
+                                    v-model="keywordLog"
+                                    append-icon="mdi-search"
+                                    label="Search" 
+                                    hide-details 
+                                ></v-text-field>
+                            </v-flex>
+                            <v-data-table v-if="change"
+                            :headers="HeadLog" 
+                            :items="logs" 
+                            :search="keywordLog" 
+                            :loading="load" >
+                                <template v-slot:body="{ items }"> 
+                                    <tbody> 
+                                        <tr v-for="(item,index) in items" :key="index"> 
+                                            <td>{{ index + 1 }}</td> 
+                                            <td>{{ item.product_restock_id }}</td>
+                                            <td>{{ item.creator.name }}</td>
+                                            <td>{{ item.created_at }}</td>
+                                            <td>{{ item.updater.name }}</td>
+                                            <td>{{ item.updated_at }}</td>
+                                        </tr> 
+                                    </tbody> 
+                                </template>
+                            </v-data-table>
                         </v-container> 
                     </v-card>
                     <v-dialog v-model="dialog" persistent max-width="600px"> 
@@ -299,6 +331,36 @@ export default {
             a: 0,
             j: -1,
             id_str: '',
+
+            logs:[],
+            change: false,
+            keywordLog: '',
+            HeadLog:[
+                { 
+                    text: 'No', 
+                    value: 'no', 
+                }, 
+                {
+                    text: 'Name',
+                    value: '',
+                },
+                {
+                    text: 'Dibuat Oleh',
+                    value: '',
+                },
+                {
+                    text: 'Kapan Dibuat',
+                    value: '',
+                },
+                {
+                    text: 'Diedit Oleh',
+                    value: '',
+                },
+                {
+                    text: 'Kapan Diedit',
+                    value: 'updateBy',
+                },
+            ],
         } 
     },
     methods:{ 
@@ -328,6 +390,12 @@ export default {
                     }) 
                 }) 
             },
+            getDataLogs(){ 
+                var uri = this.$apiUrl + 'log/productrestock' 
+                this.$http.get(uri).then(response =>{ 
+                    this.logs=response.data.data
+                }) 
+            }, 
             getDataRestock(){
                 var uri = this.$apiUrl + 'productrestock/getall'
                 this.$http.get(uri).then(response =>{
@@ -560,6 +628,7 @@ export default {
             this.getDataProduk();
             this.getSupplier();
             this.getDataRestock();
+            this.getDataLogs();
             }, 
         } 
 </script>

@@ -123,6 +123,15 @@ const routes = [
                 } 
             },
             {
+                name: 'logCSandKSController',
+                path: '/logCSandKS',
+                component: loadView('logCSandKSController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "Owner"
+                } 
+            },
+            {
                 name: 'customerController',
                 path: '/customer',
                 component: loadView('customerController'),
