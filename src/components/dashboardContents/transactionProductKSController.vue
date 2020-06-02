@@ -513,6 +513,8 @@ export default {
             var total
             var x
             
+            console.log(kasir)
+            
             this.productTransactionDetails.forEach(element => {
                 var temp = [this.no(), element.product.productName, element.product.productPrice, element.itemQty, this.subTotal[i++]];
                 row.push(temp);

@@ -109,7 +109,7 @@
 
                 <v-switch 
                 v-model="changeSerTran" 
-                label="LOG Produk Transaksi" 
+                label="LOG Layanan Transaksi" 
                 value="LOG"
                 color = "green accent-3"
                 />

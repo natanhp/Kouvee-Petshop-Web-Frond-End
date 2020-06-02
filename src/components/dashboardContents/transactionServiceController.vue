@@ -603,7 +603,7 @@
                     serviceTransactionDetails : this.serviceTransactionDetails,
                     createdBy : this.$store.getters.loggedInEmployee,
                     total : temp,
-                    Pets_id : this.formPet.id,
+                    pets_id : this.formPet.id,
                 }
 
                 console.log(this.serviceTransactionDetails)
