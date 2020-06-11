@@ -24,8 +24,6 @@
                             label="Search" 
                             hide-details 
                         ></v-text-field>
-                       
-
                     </v-flex> 
                 </v-layout> 
             
@@ -67,39 +65,6 @@
                         </tbody> 
                     </template> 
                 </v-data-table>
-                <v-switch 
-                v-model="change" 
-                label="LOG" 
-                value="LOG"
-                color = "green accent-3"
-                />
-                <!-- <v-flex xs6 class="text-right" v-if="change"> 
-                    <v-text-field 
-                        v-model="keywordLog"
-                        append-icon="mdi-search"
-                        label="Search" 
-                        hide-details 
-                    ></v-text-field>
-                </v-flex>
-                <v-data-table v-if="change"
-                :headers="HeadLog" 
-                :items="users" 
-                :search="keywordLog" 
-                :loading="load" >
-                    <template v-slot:body="{ items }"> 
-                        <tbody> 
-                            <tr v-for="(item,index) in items" :key="index"> 
-                                <td>{{ index + 1 }}</td> 
-                                <td>{{ item.createdAt }}</td> 
-                                <td>{{ item.updateAt }}</td> 
-                                <td>{{ item.deletedAt}}</td> 
-                                <td>{{ item.createdBy }}</td> 
-                                <td>{{item.updateBy}}</td>
-                                <td>{{item.updatedBy}}</td>
-                            </tr> 
-                        </tbody> 
-                    </template>
-                </v-data-table> -->
             </v-container> 
         </v-card> 
         <v-dialog v-model="dialog" persistent max-width="600px"> 
@@ -211,38 +176,6 @@ export default {
                     value: null 
                 }, 
             ], 
-            // change: false,
-            // keyworLog: '',
-            // HeadLog:[
-            //     { 
-            //         text: 'No', 
-            //         value: 'no', 
-            //     }, 
-            //     {
-            //         text: 'createdAt',
-            //         value: 'createdAt',
-            //     },
-            //     {
-            //         text: 'updateAt',
-            //         value: 'updateAt',
-            //     },
-            //     {
-            //         text: 'deletedAt',
-            //         value: 'deletedAt',
-            //     },
-            //     {
-            //         text: 'createdBy',
-            //         value: 'createdBy',
-            //     },
-            //     {
-            //         text: 'updateBy',
-            //         value: 'updateBy',
-            //     },
-            //     {
-            //         text: 'updatedBy',
-            //         value: 'updatedBy',
-            //     },
-            // ],
             pets: [], 
             snackbar: false, 
             color: null, 

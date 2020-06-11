@@ -9,7 +9,8 @@ export default new Vuex.Store({
   		status: '',
   		token: localStorage.getItem('token') || '',
   		user : localStorage.getItem('user') || '',
-  		role : localStorage.getItem('role') || '',
+		role : localStorage.getItem('role') || '',
+		name : localStorage.getItem('name') || '', 
 	},
 	mutations: {
 		auth_request(state){
@@ -45,10 +46,12 @@ export default new Vuex.Store({
                     localStorage.setItem('token', user.token)
                     localStorage.setItem('user', user.id)
 					localStorage.setItem('role', user.role)
+					localStorage.setItem('name', user.name)
 					Vue.prototype.$http.defaults.headers.common['Authorization'] = "Bearer " + user.token
 	                commit('auth_success', user.token)
 	                commit('user_id', user.id)
-	                commit('user_role', user.role)
+					commit('user_role', user.role)
+					commit('user_name', user.name)
 					resolve(resp)
 	            })
 	            .catch(err => {
@@ -71,6 +74,7 @@ export default new Vuex.Store({
 	  isLoggedIn: state => !!state.token,
       authStatus: state => state.status,
       loggedInEmployee: state => state.user,
-      employeeRole: state => state.role
+	  employeeRole: state => state.role,
+	  employeeName: state => state.name
 	}
 })

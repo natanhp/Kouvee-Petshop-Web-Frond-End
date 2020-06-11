@@ -47,6 +47,38 @@
                                     </tbody> 
                                 </template> 
                             </v-data-table>
+                            <v-switch 
+                            v-model="change" 
+                            label="LOG" 
+                            value="LOG"
+                            color = "green accent-3"
+                            />
+                            <v-flex xs6 class="text-right" v-if="change"> 
+                                <v-text-field 
+                                    v-model="keywordLog"
+                                    append-icon="mdi-search"
+                                    label="Search" 
+                                    hide-details 
+                                ></v-text-field>
+                            </v-flex>
+                            <v-data-table v-if="change"
+                            :headers="HeadLog" 
+                            :items="logs" 
+                            :search="keywordLog" 
+                            :loading="load" >
+                                <template v-slot:body="{ items }"> 
+                                    <tbody> 
+                                        <tr v-for="(item,index) in items" :key="index"> 
+                                            <td>{{ index + 1 }}</td> 
+                                            <td>{{ item.product_restock_id }}</td>
+                                            <td>{{ item.creator.name }}</td>
+                                            <td>{{ item.created_at }}</td>
+                                            <td>{{ item.updater.name }}</td>
+                                            <td>{{ item.updated_at }}</td>
+                                        </tr> 
+                                    </tbody> 
+                                </template>
+                            </v-data-table>
                         </v-container> 
                     </v-card>
                     <v-dialog v-model="dialog" persistent max-width="600px"> 
@@ -59,7 +91,7 @@
                                 <v-container> 
                                     <v-row> 
                                         <v-col cols="12"> 
-                                            <v-text-field label="*Jumlah Produk" v-model="form.productQuantity" :rules="[() => !!form.productQuantity.match(/^[0-9]*$/) && !!form.productQuantity || 'Jumlah tidak boleh kosong']" required></v-text-field>
+                                            <v-text-field label="*Jumlah Produk" v-model="form.productQuantity" :rules="[() => !!form.productQuantity.match(/^[0-9]*$/) && !!form.productQuantity || 'Jumlah harus angka 1-9 dan tidak boleh kosong']" required></v-text-field>
                                         </v-col> 
                                     </v-row> 
                                 </v-container>
@@ -73,7 +105,7 @@
                         </v-card> 
                     </v-dialog>
                     <!-- Button -->
-                    <v-btn color="primary" @click="e6 = 2">Continue</v-btn>
+                    <v-btn color="primary" @click="e6=2">Continue</v-btn>
                     <v-btn text @click="e6=3">Konfirmasi</v-btn>
                 </v-stepper-content>
 
@@ -131,7 +163,7 @@
                                 <v-container> 
                                     <v-row>
                                         <v-col cols="12"> 
-                                            <v-text-field label="*Jumlah Produk" v-model="formTabel.qty"></v-text-field>
+                                            <v-text-field label="*Jumlah Produk" v-model="formTabel.qty" :rules="[() => !!form.productQuantity.match(/^[0-9]*$/) && !!form.productQuantity || 'Jumlah harus angka 1-9 dan tidak boleh kosong']" required></v-text-field>
                                         </v-col> 
                                     </v-row> 
                                 </v-container>
@@ -144,7 +176,7 @@
                             </v-card-actions> 
                         </v-card> 
                     </v-dialog>
-                    <v-btn color="primary" @click="setFinal()">Set</v-btn>
+                    <v-btn color="primary" :disabled="this.Set == true" @click="setFinal()">Set</v-btn>
                     <v-btn v-if="this.Back == true" text @click="e6 = 1">Cancel</v-btn>
                     <v-btn v-if="this.Ok == true" text @click="lastEnd()">Continue + Print</v-btn>
                 </v-stepper-content>
@@ -172,7 +204,7 @@
                                             <v-list-item-subtitle class="text-center">Jumlah Produk: {{temp.itemQty}}</v-list-item-subtitle>
                                         </v-list-item-content>
                                     </v-flex>
-                                    <v-btn color="blue darken-1" text @click="setConfirm(item.id)">Konfirm</v-btn> 
+                                    <v-btn color="blue darken-1" text @click="setConfirm(item.id,index)">Konfirm</v-btn> 
                                 </v-card>
                             </v-flex>
                             </v-row>
@@ -194,6 +226,7 @@ export default {
             e6: 1,
             Ok: false,
             Back: true,
+            Set: false,
             dialog: false,
             dialogTab: false,
             dialogSup: false,
@@ -297,6 +330,37 @@ export default {
             updatedId : '',
             a: 0,
             j: -1,
+            id_str: '',
+
+            logs:[],
+            change: false,
+            keywordLog: '',
+            HeadLog:[
+                { 
+                    text: 'No', 
+                    value: 'no', 
+                }, 
+                {
+                    text: 'Name',
+                    value: '',
+                },
+                {
+                    text: 'Dibuat Oleh',
+                    value: '',
+                },
+                {
+                    text: 'Kapan Dibuat',
+                    value: '',
+                },
+                {
+                    text: 'Diedit Oleh',
+                    value: '',
+                },
+                {
+                    text: 'Kapan Diedit',
+                    value: 'updateBy',
+                },
+            ],
         } 
     },
     methods:{ 
@@ -326,14 +390,27 @@ export default {
                     }) 
                 }) 
             },
+            getDataLogs(){ 
+                var uri = this.$apiUrl + 'log/productrestock' 
+                this.$http.get(uri).then(response =>{ 
+                    this.logs=response.data.data
+                }) 
+            }, 
             getDataRestock(){
                 var uri = this.$apiUrl + 'productrestock/getall'
                 this.$http.get(uri).then(response =>{
                     this.details = response.data.data
                 })
             },
-            setConfirm(id){
-                var uri = this.$apiUrl + 'productrestock/confirm/' + id + '/' + this.$store.getters.loggedInEmployee
+            setConfirm(id,index){
+                this.details.forEach(element => {
+                    if(element.id === id){
+                        this.id_str = id;
+                    }
+                })
+                console.log(this.id_str)
+                console.log(this.$store.getters.loggedInEmployee)
+                var uri = this.$apiUrl + 'productrestock/confirm/' + this.id_str + '/' + this.$store.getters.loggedInEmployee
                 this.$http.get(uri).then(response =>{ 
                     this.snackbar = true; 
                     this.text = response.data.message; 
@@ -415,7 +492,6 @@ export default {
                         Object.assign(this.productRestockDetails[this.j], edit)
                     }
                 }
-
                 this.closeForm()
             },
             setFinal(){
@@ -442,6 +518,7 @@ export default {
                         this.text = response.data.message; //memasukkan pesan ke snackbar 
                         this.load = false; 
                         this.dialog = false;
+                        this.Set = true;
                         this.Ok = true;
                         this.Back = false;
                         this.resetForm();
@@ -458,6 +535,7 @@ export default {
                  this.printPDF();
                  this.Ok = false;
                  this.Back = true;
+                 this.Set = false;
                  this.a = 0;
                  this.formTabel.sup = ''
                  this.e6=3;
@@ -532,23 +610,25 @@ export default {
 
                 doc.setFont("times");
                 doc.setFontSize(20);
-                doc.text(25,80,"Kepada Yth : ");
+                doc.text(20,80,"Kepada Yth : ");
                 doc.setFontSize(14);
                 doc.text(145,75,'No : ' + id + '');
                 doc.text(145,80,'Tanggal : '+day+' - '+month+' - '+year+' ');
-                doc.text(25,85,name);
-                doc.text(25,90,address);
-                doc.text(25,95,nomor);
+                doc.text(20,85,name);
+                doc.text(20,90,address);
+                doc.text(20,95,nomor);
+                doc.text(20,115,'Mohon untuk disediakan produk-produk ini : ')
                 doc.text(135,290,'Dicetak tanggal : '+day+' - '+month+' - '+year+' ');
 
                 doc.autoTable(col,row,{startY:120, theme:'grid'})
-                doc.save("try.pdf")
+                doc.save('Struk Pengadaan '+ id +' ')
             }   
         },
         mounted(){ 
             this.getDataProduk();
             this.getSupplier();
             this.getDataRestock();
+            this.getDataLogs();
             }, 
         } 
 </script>

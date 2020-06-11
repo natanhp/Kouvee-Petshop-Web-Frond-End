@@ -51,9 +51,12 @@
               <v-divider class="mx-4" inset vertical></v-divider>
               <v-text-field v-model="keyword" append-icon="mdi-search" label="Pencarian" hide-details></v-text-field>
               <v-divider class="mx-4" inset vertical></v-divider>
+              <v-btn text @click="sortByPriceProduct">Sort By Harga</v-btn>
+              <v-divider class="mx-4" inset vertical></v-divider>
+              <v-btn text @click="sortByQtyProduct">Sort By Jumlah</v-btn>
             </v-toolbar>
             <v-row>
-              <v-col cols="3" v-for="(item,index) in filter" :key="index">
+              <v-col cols="3" v-for="(item,index) in FilterAndSortProduct" :key="index">
                 <v-card>
                   <v-list-item three-line>
                    <v-list-item-content>
@@ -77,9 +80,10 @@
               <v-divider class="mx-4" inset vertical></v-divider>
               <v-text-field v-model="keywordService" append-icon="mdi-search" label="Pencarian" hide-details></v-text-field>
               <v-divider class="mx-4" inset vertical></v-divider>
+              <v-btn text @click="sortByPriceService">Sort By Harga</v-btn>
             </v-toolbar>
             <v-row>
-              <v-col cols="3" v-for="(item,index) in filterService" :key="index">
+              <v-col cols="3" v-for="(item,index) in FilterAndSortService" :key="index">
                 <v-card>
                   <v-list-item three-line>
                    <v-list-item-content>
@@ -100,7 +104,9 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12 text-center">
-            <h2 class="section-heading text-uppercase">Kelompok 2 P3L Kelas J</h2>
+            <h2 class="section-heading text-uppercase">ABOUT US</h2>
+            <h2 class="section-heading text">Kouvee Petshop</h2>
+            <h2 class="section-heading text-uppercase">(Kelompok 2 P3L Kelas J)</h2>
           </div>
         </div>
         <div class="row">
@@ -135,7 +141,9 @@
         </div>
         <div class="row">
           <div class="col-lg-8 mx-auto text-center">
-            <p class="large text-muted">Sesuatu yang berat di mulai dari pikiran diri sendiri</p>
+            <p class="large text-muted">Kouvee Pet Shop merupakan sebuah toko hewan yang sudah berdiri sejak tahun 2018 menyediakan produk dan jasa layanan yang berada di Kota Yogyakarta. 
+              Kouvee Pet Shop menyediakan berbagai macam produk untuk hewan kesayangan anda seperti makanan, aksesoris, perlengkapan dan lain-lain sesuai kebutuhan hewan kesayangan anda. 
+              Selain menjual berbagai macam produk, Kouvee Pet Shop juga menyediakan jasa layanan seperti grooming dan penitipan hewan.</p>
           </div>
         </div>
       </div>
@@ -170,15 +178,16 @@ body {
 <script>
 export default {
   data () { 
-        return { 
+        return {
+            clickPrice: 0,
+            clickQty: 0,
+            clickService: 0,
             dialog: false, 
             keyword: '',
             keywordService: '',
             data: [],
             serviceDetails: [],
             services: [],
-            petTypes: [],
-            petSizes: [],
             snackbar: false,
             color: null, 
             text: '', 
@@ -198,16 +207,14 @@ export default {
       } 
   },
   computed:{
-    filter(){
-      return this.data.filter((data) => {
-          return data.product.productName.toLowerCase().includes(this.keyword.toLowerCase())
-      })
+    FilterAndSortProduct(){
+      let filter = new RegExp(this.keyword, 'i')
+      return this.data.filter(el => el.product.productName.match(filter))
     },
-    filterService(){
-      return this.serviceDetails.filter((serviceDetails) => {
-          return serviceDetails.completeName.toLowerCase().includes(this.keywordService.toLowerCase())
-      })
-    }
+    FilterAndSortService(){
+      let filter = new RegExp(this.keywordService, 'i')
+      return this.serviceDetails.filter(el => el.completeName.match(filter))
+    },
   },
   methods:{
     getData(){ 
@@ -223,22 +230,49 @@ export default {
         })  
     },
     getDataService(){ 
-            var uri = this.$apiUrl + 'noa/servicedetails/getall' 
-            this.$http.get(uri).then(response =>{ 
-                this.serviceDetails = []
-                response.data.data.forEach(element => {
-                    this.serviceDetails.push({
-                        completeName: element.complete_name,
-                        id: element.service_detail.id,
-                        price: element.service_detail.price,
-                        petTypeId: element.service_detail.PetTypes_id,
-                        petSizeId: element.service_detail.PetSizes_id,
-                        serviceId: element.service_detail.Services_id
-                    })
-                }); 
-            }) 
-        },
-  }, 
+        var uri = this.$apiUrl + 'noa/servicedetails/getall' 
+        this.$http.get(uri).then(response =>{ 
+            this.serviceDetails = []
+            response.data.data.forEach(element => {
+                this.serviceDetails.push({
+                    completeName: element.complete_name,
+                    id: element.service_detail.id,
+                    price: element.service_detail.price,
+                    petTypeId: element.service_detail.PetTypes_id,
+                    petSizeId: element.service_detail.PetSizes_id,
+                    serviceId: element.service_detail.Services_id
+                })
+            }); 
+        }) 
+    },
+    sortByPriceProduct(){
+      if(this.clickPrice === 0){
+        this.data.sort((a,b) => a.product.productPrice > b.product.productPrice ? 1 : -1)
+        this.clickPrice = 1;
+      }else if(this.clickPrice === 1){
+        this.data.sort((a,b) => a.product.productPrice < b.product.productPrice ? 1 : -1)
+        this.clickPrice = 0;
+      }
+    },
+    sortByQtyProduct(){
+      if(this.clickQty === 0){
+        this.data.sort((a,b) => a.product.productQuantity > b.product.productQuantity ? 1 : -1)
+        this.clickQty = 1;
+      }else if(this.clickQty === 1){
+        this.data.sort((a,b) => a.product.productQuantity < b.product.productQuantity ? 1 : -1)
+        this.clickQty = 0;
+      }
+    },
+    sortByPriceService(){
+      if(this.clickService === 0){
+        this.serviceDetails.sort((a,b) => a.price > b.price ? 1 : -1)
+        this.clickService = 1;
+      }else if(this.clickService === 1){
+        this.serviceDetails.sort((a,b) => a.price < b.price ? 1 : -1)
+        this.clickService = 0;
+      }
+    },
+  },
   mounted(){ 
       this.getData();
       this.getDataService();

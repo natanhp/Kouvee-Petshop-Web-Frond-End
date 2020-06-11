@@ -96,6 +96,42 @@ const routes = [
                 } 
             },
             {
+                name: 'reportBestSellerController',
+                path: '/reportBestSeller',
+                component: loadView('reportBestSellerController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "Owner"
+                } 
+            },
+            {
+                name: 'reportIncomeController',
+                path: '/reportIncome',
+                component: loadView('reportIncomeController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "Owner"
+                } 
+            },
+            {
+                name: 'reportProcurementController',
+                path: '/reportProcurement',
+                component: loadView('reportProcurementController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "Owner"
+                } 
+            },
+            {
+                name: 'logCSandKSController',
+                path: '/logCSandKS',
+                component: loadView('logCSandKSController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "Owner"
+                } 
+            },
+            {
                 name: 'customerController',
                 path: '/customer',
                 component: loadView('customerController'),
@@ -111,6 +147,42 @@ const routes = [
                 meta: { 
                     requiresAuth: true,
                     role: "CS"
+                } 
+            },
+            {
+                name: 'transactionProductController',
+                path: '/transProduct',
+                component: loadView('transactionProductController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "CS"
+                } 
+            },
+            {
+                name: 'transactionServiceController',
+                path: '/transService',
+                component: loadView('transactionServiceController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "CS"
+                } 
+            },
+            {
+                name: 'transactionProductKSController',
+                path: '/transProductKS',
+                component: loadView('transactionProductKSController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "Kasir"
+                } 
+            },
+            {
+                name: 'transactionServiceKSController',
+                path: '/transServiceKS',
+                component: loadView('transactionServiceKSController'),
+                meta: { 
+                    requiresAuth: true,
+                    role: "Kasir"
                 } 
             }
         ],     

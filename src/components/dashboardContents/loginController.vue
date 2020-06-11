@@ -54,6 +54,8 @@ export default {
                     this.$router.push('/employee')
                 } else if(response.data.data[0].role==="CS") {
                     this.$router.push('/customer')
+                }else{
+                    this.$router.push('/transProductKS')
                 }
             })
             let role = this.$store.getters.employeeRole
