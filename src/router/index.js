@@ -191,7 +191,10 @@ const routes = [
 
 Vue.use(Router) 
                
-const router = new Router({mode: 'history', routes: routes}) 
+const router = new Router({mode: 'history',
+// If we want to deploy to non root path 
+// base: '/Kouvee-Petshop-Frontend/', 
+routes: routes}) 
 
 router.beforeEach((to, from, next) => {
     if(to.matched.some(record => record.meta.requiresAuth)) {
