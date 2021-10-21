@@ -27,6 +27,9 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
+## Live Demo
+[https://natanhp.github.io/Kouvee-Petshop-Frontend/](https://natanhp.github.io/Kouvee-Petshop-Frontend/)
+
 ## Contributors
 1. [Natan Hari Pamungkas](https://github.com/natanhp)
 2. [Yakobus Nobel Judo Prajitno](https://github.com/YakobusNobels)
